@@ -1,0 +1,20 @@
+# Build artifacts
+target/
+
+# Database files
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+
+# Driver binary (C++)
+driver/*.sys
+driver/*.pdb
+
+# IDE
+.vscode/
+.idea/
+
+# OS files
+Thumbs.db
+*.tmp

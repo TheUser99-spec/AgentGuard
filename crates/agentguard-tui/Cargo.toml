@@ -1,0 +1,19 @@
+[package]
+name = "agentguard-tui"
+version.workspace = true
+edition.workspace = true
+
+[[bin]]
+name = "agentguard-tui"
+path = "src/main.rs"
+
+[dependencies]
+agentguard-core.workspace = true
+agentguard-ipc.workspace = true
+chrono.workspace = true
+ratatui.workspace = true
+crossterm.workspace = true
+tokio.workspace = true
+
+[lints]
+workspace = true

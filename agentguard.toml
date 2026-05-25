@@ -1,0 +1,56 @@
+# agentguard.toml — Permisos del agente para este proyecto
+# Documentacion: https://agentguard.dev/docs/manifest
+
+[project]
+name    = "AgentGuard"
+default = "conservative"  # conservative | unrestricted
+
+# El agente NUNCA puede acceder a estos ficheros
+[deny]
+files = [
+    ".env",
+    ".env.*",
+    "*.pem",
+    "*.key",
+    "*.p12",
+    ".git/**",
+    "secrets/**",
+    "*.tmp",
+]
+
+# El agente debe PREGUNTAR antes de acceder
+[ask]
+files = [
+    "Cargo.lock",
+    "package-lock.json",
+    "*.config.js",
+    "*.config.ts",
+]
+
+# El agente puede LEER Y ESCRIBIR (no borrar)
+[write]
+files = [
+    "src/**",
+    "tests/**",
+    "Cargo.toml",
+    "package.json",
+]
+
+# El agente puede BORRAR (y leer)
+[delete]
+files = [
+    "target/**",
+    "node_modules/**",
+    "dist/**",
+    "build/**",
+    "*.log",
+    "tmp/**",
+]
+
+# El agente SOLO puede LEER
+[read]
+files = [
+    "docs/**/*.md",
+    "README.md",
+    ".cursor/rules/**",
+]

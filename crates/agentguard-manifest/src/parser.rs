@@ -1,0 +1,194 @@
+use agentguard_core::{DefaultMode, GuardError, GuardResult};
+use serde::{Deserialize, Serialize};
+use std::path::Path;
+use std::str::FromStr;
+
+use crate::compiled::CompiledManifest;
+
+/// Representacion directa del agentguard.toml.
+/// Cada campo corresponde a una seccion del fichero.
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+pub struct ProjectManifest {
+    #[serde(default)]
+    pub project: ProjectMeta,
+
+    #[serde(default)]
+    pub deny: BucketSpec,
+
+    #[serde(default)]
+    pub ask: BucketSpec,
+
+    #[serde(default)]
+    pub full: BucketSpec,
+
+    #[serde(default)]
+    pub delete: BucketSpec,
+
+    #[serde(default)]
+    pub write: BucketSpec,
+
+    #[serde(default)]
+    pub read: BucketSpec,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+pub struct ProjectMeta {
+    pub name: Option<String>,
+    pub description: Option<String>,
+    #[serde(default)]
+    pub default: DefaultMode,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+pub struct BucketSpec {
+    #[serde(default)]
+    pub files: Vec<String>,
+}
+
+impl ProjectManifest {
+    /// Parsea un agentguard.toml desde su contenido como string.
+    pub fn parse_str(content: &str) -> GuardResult<Self> {
+        content.parse()
+    }
+
+    /// Lee y parsea un agentguard.toml desde disco.
+    pub fn from_file(path: &Path) -> GuardResult<Self> {
+        let content = std::fs::read_to_string(path)
+            .map_err(|e| GuardError::ManifestParse(format!("No se pudo leer {:?}: {}", path, e)))?;
+        Self::parse_str(&content)
+    }
+
+    /// Compila el manifest a GlobSets. `workspace_root` es el directorio donde esta el .toml.
+    pub fn compile(&self, workspace_root: std::path::PathBuf) -> GuardResult<CompiledManifest> {
+        CompiledManifest::compile(self, workspace_root)
+    }
+
+    /// Genera un agentguard.toml de ejemplo para `agentguard init`.
+    pub fn example(project_name: &str) -> String {
+        format!(
+            r#"# agentguard.toml — Permisos del agente para este proyecto
+# Documentacion: https://agentguard.dev/docs/manifest
+
+[project]
+name    = "{name}"
+default = "conservative"  # conservative | unrestricted
+
+# El agente NUNCA puede acceder a estos ficheros
+[deny]
+files = [
+    ".env",
+    ".env.*",
+    "*.pem",
+    "*.key",
+    "*.p12",
+    ".git/**",
+    "secrets/**",
+]
+
+# El agente debe PREGUNTAR antes de acceder
+[ask]
+files = [
+    "Cargo.lock",
+    "package-lock.json",
+    "*.config.js",
+    "*.config.ts",
+]
+
+# El agente puede LEER Y ESCRIBIR (no borrar)
+[write]
+files = [
+    "src/**",
+    "tests/**",
+    "Cargo.toml",
+    "package.json",
+]
+
+# El agente puede BORRAR (y leer)
+[delete]
+files = [
+    "target/**",
+    "node_modules/**",
+    "dist/**",
+    "build/**",
+    "*.log",
+    "tmp/**",
+]
+
+# El agente SOLO puede LEER
+[read]
+files = [
+    "docs/**/*.md",
+    "README.md",
+    ".cursor/rules/**",
+]
+"#,
+            name = project_name
+        )
+    }
+}
+
+impl FromStr for ProjectManifest {
+    type Err = GuardError;
+
+    fn from_str(content: &str) -> GuardResult<Self> {
+        toml::from_str(content).map_err(|e| GuardError::ManifestParse(e.to_string()))
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn parse_full_manifest() {
+        let toml = r#"
+            [project]
+            name = "test-app"
+            default = "conservative"
+
+            [deny]
+            files = [".env", "*.key"]
+
+            [ask]
+            files = ["Cargo.lock"]
+
+            [write]
+            files = ["src/**/*.rs"]
+
+            [delete]
+            files = ["target/**"]
+
+            [read]
+            files = ["docs/**"]
+        "#;
+
+        let m = ProjectManifest::parse_str(toml).unwrap();
+        assert_eq!(m.project.name.as_deref(), Some("test-app"));
+        assert_eq!(m.deny.files, vec![".env", "*.key"]);
+        assert_eq!(m.ask.files, vec!["Cargo.lock"]);
+        assert_eq!(m.write.files, vec!["src/**/*.rs"]);
+        assert_eq!(m.delete.files, vec!["target/**"]);
+        assert_eq!(m.read.files, vec!["docs/**"]);
+    }
+
+    #[test]
+    fn empty_manifest_uses_defaults() {
+        let m = ProjectManifest::parse_str("").unwrap();
+        assert!(m.deny.files.is_empty());
+        assert!(matches!(m.project.default, DefaultMode::Conservative));
+    }
+
+    #[test]
+    fn invalid_toml_returns_error() {
+        let result = ProjectManifest::parse_str("[[invalid toml}}}");
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn example_parses() {
+        let toml = ProjectManifest::example("myproject");
+        let m = ProjectManifest::parse_str(&toml).unwrap();
+        assert_eq!(m.project.name.as_deref(), Some("myproject"));
+        assert!(!m.deny.files.is_empty());
+    }
+}

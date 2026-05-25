@@ -1,0 +1,13 @@
+[package]
+name        = "agentguard-core"
+description = "Shared types, errors and traits for AgentGuard — zero external deps"
+version.workspace    = true
+edition.workspace    = true
+authors.workspace    = true
+license.workspace    = true
+repository.workspace = true
+
+[dependencies]
+thiserror = { workspace = true }
+serde     = { workspace = true }
+chrono    = { workspace = true }

@@ -1,0 +1,77 @@
+[workspace]
+members = [
+    "crates/agentguard-core",
+    "crates/agentguard-manifest",
+    "crates/agentguard-policy",
+    "crates/agentguard-store",
+    "crates/agentguard-probe",
+    "crates/agentguard-enforce",
+    "crates/agentguard-ipc",
+    "crates/agentguard-notify",
+    "crates/agentguard-audit",
+    "crates/agentguard-daemon",
+    "crates/agentguard-cli",
+    "crates/agentguard-tui",
+]
+resolver = "2"
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+authors = ["AgentGuard"]
+license = "MIT"
+repository = "https://github.com/anomalyco/agentguard"
+
+[workspace.dependencies]
+# Internal
+agentguard-core = { path = "crates/agentguard-core" }
+agentguard-manifest = { path = "crates/agentguard-manifest" }
+agentguard-policy = { path = "crates/agentguard-policy" }
+agentguard-store = { path = "crates/agentguard-store" }
+agentguard-probe = { path = "crates/agentguard-probe" }
+agentguard-enforce = { path = "crates/agentguard-enforce" }
+agentguard-ipc = { path = "crates/agentguard-ipc" }
+agentguard-notify = { path = "crates/agentguard-notify" }
+agentguard-audit = { path = "crates/agentguard-audit" }
+
+# External - portable (cross-platform)
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+toml = "0.8"
+globset = "0.4"
+rusqlite = { version = "0.31", features = ["bundled"] }
+thiserror = "2"
+anyhow = "1"
+clap = { version = "4", features = ["derive", "cargo"] }
+chrono = { version = "0.4", features = ["serde"] }
+tokio = { version = "1", features = ["full"] }
+ctor = "0.2"
+log = "0.4"
+tracing = "0.1"
+dirs = "5"
+
+# External - Windows-only
+windows-sys = { version = "0.59", features = [
+    "Win32_Foundation",
+    "Win32_Security",
+    "Win32_Security_Authorization",
+    "Win32_Storage_FileSystem",
+    "Win32_System_Threading",
+    "Win32_System_IO",
+    "Win32_System_Services",
+    "Win32_System_Console",
+    "Win32_System_Diagnostics_Etw",
+    "Win32_System_Diagnostics_ToolHelp",
+    "Win32_System_ProcessStatus",
+] }
+ferrisetw = "0.1"
+ratatui = "0.29"
+crossterm = "0.28"
+# win-notification = "0.1"  # no existe en crates.io — usar windows crate cuando se implemente
+
+[workspace.lints.rust]
+unsafe_code = "deny"
+
+[workspace.lints.clippy]
+unwrap_used = "deny"
+expect_used = "deny"

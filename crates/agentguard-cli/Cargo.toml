@@ -1,0 +1,19 @@
+[package]
+name = "agentguard-cli"
+version.workspace = true
+edition.workspace = true
+
+[[bin]]
+name = "agentguard"
+path = "src/main.rs"
+
+[dependencies]
+agentguard-core.workspace = true
+agentguard-manifest.workspace = true
+agentguard-ipc.workspace = true
+chrono.workspace = true
+clap.workspace = true
+tokio.workspace = true
+
+[lints]
+workspace = true

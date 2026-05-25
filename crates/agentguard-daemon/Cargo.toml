@@ -1,0 +1,27 @@
+[package]
+name = "agentguard-daemon"
+version.workspace = true
+edition.workspace = true
+
+[[bin]]
+name = "agentguard-daemon"
+path = "src/main.rs"
+
+[dependencies]
+agentguard-core.workspace = true
+agentguard-manifest.workspace = true
+agentguard-policy.workspace = true
+agentguard-store.workspace = true
+agentguard-probe.workspace = true
+agentguard-enforce.workspace = true
+agentguard-ipc.workspace = true
+agentguard-notify.workspace = true
+agentguard-audit.workspace = true
+chrono.workspace = true
+globset.workspace = true
+tokio.workspace = true
+tracing.workspace = true
+windows-sys.workspace = true
+
+[lints]
+workspace = true

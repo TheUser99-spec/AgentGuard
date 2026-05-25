@@ -1,0 +1,10 @@
+[package]
+name = "agentguard-team"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+agentguard-core.workspace = true
+
+[lints]
+workspace = true

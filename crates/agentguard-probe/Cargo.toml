@@ -1,0 +1,14 @@
+[package]
+name = "agentguard-probe"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+agentguard-core.workspace = true
+chrono.workspace = true
+ferrisetw.workspace = true
+tokio.workspace = true
+windows-sys.workspace = true
+
+[lints]
+workspace = true

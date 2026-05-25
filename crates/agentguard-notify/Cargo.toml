@@ -1,0 +1,10 @@
+[package]
+name = "agentguard-notify"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+agentguard-core.workspace = true
+
+[lints]
+workspace = true
