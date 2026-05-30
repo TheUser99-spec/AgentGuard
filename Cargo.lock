@@ -17,8 +17,10 @@ name = "agentguard-cli"
 version = "0.1.0"
 dependencies = [
  "agentguard-core",
+ "agentguard-daemon",
  "agentguard-ipc",
  "agentguard-manifest",
+ "agentguard-tui",
  "chrono",
  "clap",
  "serde_json",

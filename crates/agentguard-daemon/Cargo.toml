@@ -7,6 +7,10 @@ edition.workspace = true
 name = "agentguard-daemon"
 path = "src/main.rs"
 
+[lib]
+name = "agentguard_daemon"
+path = "src/lib.rs"
+
 [dependencies]
 agentguard-core.workspace = true
 agentguard-manifest.workspace = true
