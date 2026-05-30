@@ -633,18 +633,23 @@ impl App {
             return;
         }
         let items: Vec<ListItem> = groups.iter().map(|g| {
-            let (_, fg, label) = agent_chip(g.label);
-            let pids = g.pids.iter().map(|p| p.to_string()).collect::<Vec<_>>().join(",");
+            let (bg, fg, label) = agent_chip(g.label);
+            let pids_display = g.pids.iter().map(|p| p.to_string()).collect::<Vec<_>>().join(", ");
+            let pids_text = if pids_display.len() > 36 {
+                format!("...{}", &pids_display[pids_display.len().saturating_sub(33)..])
+            } else { pids_display };
             ListItem::new(Line::from(vec![
                 Span::raw("  "),
-                Span::styled(label, Style::default().bg(t::RED_DIM).fg(fg).add_modifier(Modifier::BOLD)),
+                Span::styled(label, Style::default().bg(bg).fg(fg).add_modifier(Modifier::BOLD)),
                 Span::raw("  "),
                 Span::styled(&g.image_name, Style::default().fg(t::TEXT).add_modifier(Modifier::BOLD)),
                 Span::raw("  "),
-                Span::styled(format!("PID:{}", truncate(&pids, 12)), Style::default().fg(t::CYAN)),
+                Span::styled(format!("PIDs: {pids_text}"), Style::default().fg(t::CYAN)),
             ]))
         }).collect();
-        f.render_widget(List::new(items).block(card(&format!(" Agents ({}) ", groups.len()))), area);
+        f.render_widget(List::new(items).block(card(&format!(" Agents ({} group{} / {} proc{}) ",
+            groups.len(), if groups.len() == 1 { "" } else { "s" },
+            self.active_agent_process_count, if self.active_agent_process_count == 1 { "" } else { "s" }))), area);
     }
 
     fn draw_home_activity(&self, f: &mut Frame, area: Rect) {
@@ -843,7 +848,7 @@ impl App {
                 Span::styled(format!("read:{}", p.read_count), Style::default().fg(t::CYAN)),
             ]))
         }).collect();
-        f.render_widget(List::new(items).block(card(&format!(" Projects ({}) [switch with [ ] ", self.projects.len()))), h[0]);
+        f.render_widget(List::new(items).block(card(&format!(" Projects ({}) ", self.projects.len()))), h[0]);
 
         // Project identity
         if let Some(proj) = self.selected_project.as_ref().and_then(|p| self.projects.iter().find(|x| &x.path == p)) {
@@ -921,11 +926,6 @@ impl App {
             Span::styled(" next: ", Style::default().fg(t::MUTED)),
             Span::styled(next_label, Style::default().fg(tone_fg(next_tone)).add_modifier(Modifier::BOLD)),
         ];
-        if self.active_tab == 2 {
-            spans.push(Span::raw("  "));
-            spans.push(key(" [ ] "));
-            spans.push(Span::styled(" switch project", Style::default().fg(t::MUTED)));
-        }
         if self.search_active || !self.search_query.is_empty() {
             spans.push(Span::raw("  │  "));
             spans.push(Span::styled(format!("filter: {}", self.search_query), Style::default().fg(t::YELLOW)));
