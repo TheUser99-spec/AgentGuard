@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
+  <metadata>
+    <id>agentguard</id>
+    <version>0.1.2</version>
+    <title>AgentGuard</title>
+    <authors>TheUser99-spec</authors>
+    <projectUrl>https://github.com/TheUser99-spec/AgentGuard</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/TheUser99-spec/AgentGuard/main/.github/icon.png</iconUrl>
+    <license type="expression">MIT</license>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <projectSourceUrl>https://github.com/TheUser99-spec/AgentGuard</projectSourceUrl>
+    <docsUrl>https://github.com/TheUser99-spec/AgentGuard#readme</docsUrl>
+    <tags>security agentguard ai coding-agent filesystem windows rust cli</tags>
+    <summary>OS-level file safety for AI coding agents</summary>
+    <description>
+AgentGuard is a Windows security layer that sits between your filesystem and
+any AI coding agent — Claude Code, Cursor, OpenCode, Copilot, Windsurf, you
+name it. It watches every file operation in real time and enforces exactly
+what each agent can read, write, or delete.
+
+Features:
+- Real-time agent detection (11+ known agents, 25+ env signals)
+- Policy engine with glob-based rules (deny, ask, full, delete, write, read)
+- Windows ACL/ACE enforcement
+- SQLite audit log with full event history
+- Terminal dashboard (TUI, 60fps)
+- Invisible background daemon
+    </description>
+  </metadata>
+  <files>
+    <file src="tools\**" target="tools" />
+  </files>
+</package>
