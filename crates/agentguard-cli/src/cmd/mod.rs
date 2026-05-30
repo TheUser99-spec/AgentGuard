@@ -4,4 +4,7 @@ pub mod daemon;
 pub mod global;
 pub mod init;
 pub mod project;
+pub mod run;
 pub mod status;
+pub mod ui;
+pub mod update;

@@ -7,6 +7,10 @@ edition.workspace = true
 name = "agentguard-tui"
 path = "src/main.rs"
 
+[lib]
+name = "agentguard_tui"
+path = "src/lib.rs"
+
 [dependencies]
 agentguard-core.workspace = true
 agentguard-ipc.workspace = true

@@ -53,6 +53,16 @@ pub enum Commands {
         #[command(subcommand)]
         cmd: AgentCommands,
     },
+    /// Abre el dashboard TUI (requiere daemon corriendo)
+    Ui,
+    /// Arranca daemon + TUI juntos
+    Run,
+    /// Busca e instala la ultima version desde GitHub
+    Update {
+        /// Solo verificar, no instalar
+        #[arg(long)]
+        check: bool,
+    },
 }
 
 #[derive(Subcommand)]
@@ -196,6 +206,9 @@ async fn main() {
             AgentCommands::Remove { id } => cmd::agent::remove(id).await,
             AgentCommands::List { image } => cmd::agent::list(image).await,
         },
+        Commands::Ui => cmd::ui::run().await,
+        Commands::Run => cmd::run::run().await,
+        Commands::Update { check } => cmd::update::run(check).await,
     };
     if let Err(e) = result {
         eprintln!("\x1b[31merror:\x1b[0m {e}");
