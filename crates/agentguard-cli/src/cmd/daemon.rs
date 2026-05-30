@@ -36,8 +36,11 @@ pub async fn start() -> GuardResult<()> {
         {
             use std::os::windows::process::CommandExt;
             const CREATE_NEW_PROCESS_GROUP: u32 = 0x00000200;
+            const CREATE_NO_WINDOW: u32 = 0x08000000;
             std::process::Command::new(&exe)
-                .creation_flags(CREATE_NEW_PROCESS_GROUP)
+                .creation_flags(CREATE_NEW_PROCESS_GROUP | CREATE_NO_WINDOW)
+                .stdout(std::process::Stdio::null())
+                .stderr(std::process::Stdio::null())
                 .spawn()
                 .map_err(|e| GuardError::IpcError(format!("Failed to spawn {:?}: {e}", exe)))?;
         }
