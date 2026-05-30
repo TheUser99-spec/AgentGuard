@@ -1,106 +1,149 @@
 # AgentGuard
 
-AgentGuard is a Windows-first security layer for AI coding agents. It enforces what agents can read, write, or delete using explicit policy buckets and OS-level controls.
+**OS-level file safety for AI coding agents.** AgentGuard constrains what AI agents can read, write, or delete on your filesystem using explicit security policies.
 
-## What is in this repository
-
-- Rust workspace for policy, store, detection, IPC, daemon, CLI, and TUI.
-- C++ kernel driver folder for Phase 2 (`driver/`).
-- Future modules (`modules/agentguard-scanner`, `modules/agentguard-team`).
-
-## Permission model
-
-Priority order:
-
-`deny > ask > full > delete > write > read > default`
-
-Defaults:
-- `conservative`: read Allow, write Ask, delete Deny
-- `unrestricted`: Allow all
-
-`deny` always wins.
-
-## Current architecture (Phase 1/1.5 codebase)
-
-- Process detection and classification in `agentguard-probe`
-- Policy compilation/evaluation in `agentguard-manifest` + `agentguard-policy`
-- Persistence and schema ownership in `agentguard-store`
-- Enforcement logic in `agentguard-enforce`
-- Named pipe protocol in `agentguard-ipc`
-- Orchestration in `agentguard-daemon`
-- User surfaces in `agentguard-cli` and `agentguard-tui`
-
-## Verified workspace members (2026-05-29)
-
-From root `Cargo.toml`:
-
-- `agentguard-core`
-- `agentguard-manifest`
-- `agentguard-policy`
-- `agentguard-store`
-- `agentguard-probe`
-- `agentguard-enforce`
-- `agentguard-ipc`
-- `agentguard-notify`
-- `agentguard-audit`
-- `agentguard-daemon`
-- `agentguard-cli`
-- `agentguard-tui`
-- `agentguard-mascot`
-
-Repository crate not currently listed in workspace members:
-- `agentguard-spawn`
-
-## Verified test inventory (2026-05-29)
-
-Counts below come from `cargo test -p <crate> -- --list`.
-
-| Crate | Listed tests |
-|---|---:|
-| agentguard-core | 5 |
-| agentguard-manifest | 48 |
-| agentguard-policy | 8 |
-| agentguard-store | 16 |
-| agentguard-probe | 27 |
-| agentguard-enforce | 11 |
-| agentguard-ipc | 28 |
-| agentguard-notify | 1 |
-| agentguard-audit | 5 |
-| agentguard-daemon | 22 |
-| agentguard-cli | 38 |
-| agentguard-tui | 0 |
-| agentguard-mascot | 1 |
-
-Observed execution status in this environment:
-- `cargo test --workspace` is not fully green in a plain shell run.
-- `agentguard-cli` e2e tests require a running daemon pipe (`\\.\pipe\agentguard`), otherwise they fail.
-- Some `agentguard-enforce` tests are privilege-sensitive and can fail with `SetNamedSecurityInfoW DACL: 5`.
-
-## Practical commands
-
-```bash
-cargo build --workspace
-cargo test --workspace
-cargo test -p agentguard-manifest
-cargo test -p agentguard-store
-cargo run -p agentguard-daemon
-cargo run -p agentguard-cli -- status
-cargo run -p agentguard-tui
+```
+agentguard init          # One command to protect any project
+agentguard run           # Start daemon + dashboard together
+agentguard status        # Live status of all protected workspaces
 ```
 
-## Documentation map
+---
 
-- Architecture overview: `docs/01-architecture.md`
-- Core types: `docs/02-core-types.md`
-- Manifest and policy: `docs/03-manifest-policy.md`
-- Storage and audit: `docs/04-storage-audit.md`
-- Detection and enforcement: `docs/05-detection-enforcement.md`
-- IPC and daemon/CLI: `docs/06-ipc-daemon-cli.md`
-- ADR index: `docs/adr/README.md`
+## Quick install (Windows)
 
-## Notes for contributors
+```powershell
+irm https://raw.githubusercontent.com/TheUser99-spec/AgentGuard/main/install.ps1 | iex
+```
 
-- Preserve dependency direction (`core` at the bottom, app crates at the top).
-- Canonicalize filesystem paths before policy matching.
-- Route all DB changes through `agentguard-store`.
-- Avoid modifying `driver/` and `modules/` unless explicitly requested.
+Then restart your terminal and run:
+
+```powershell
+agentguard init      # Creates agentguard.toml + registers your project
+agentguard run       # Opens the dashboard
+```
+
+---
+
+## Commands
+
+| Command | Description |
+|---|---|
+| `agentguard init` | Create `agentguard.toml`, start daemon, register project |
+| `agentguard run` | Start daemon + open TUI dashboard |
+| `agentguard ui` | Open TUI (daemon must be running) |
+| `agentguard daemon start/stop/restart` | Daemon lifecycle |
+| `agentguard status` | Show running status, projects, agents |
+| `agentguard project validate/check/unregister/show` | Project operations |
+| `agentguard project verify` | Audit effective protection coverage |
+| `agentguard global add/remove/list` | Global rules (apply to all projects) |
+| `agentguard agent add/remove/list` | Per-agent rules (cursor.exe, claude.exe, etc.) |
+| `agentguard audit list` | View audit history |
+| `agentguard update` | Auto-update from GitHub |
+| `agentguard update --check` | Check for updates (no install) |
+
+---
+
+## How it works
+
+AgentGuard monitors your workspace in real time:
+
+1. **Detects** AI agent processes (Cursor, Claude, OpenCode, Copilot, etc.)
+2. **Evaluates** every file access against your policy
+3. **Enforces** decisions at the OS level (ACL/ACE-based for now)
+4. **Audits** everything — full history in SQLite
+
+### Permission model
+
+```
+deny > ask > full > delete > write > read
+```
+
+- `deny` — Agent can never touch these files
+- `ask` — Agent must request permission (you approve/deny)
+- `full` — Read, write, and delete allowed
+- `delete` — Read and delete, no write
+- `write` — Read and write, no delete
+- `read` — Read-only
+
+Default when no rule matches: `conservative` (read=Allow, write=Ask, delete=Deny).
+
+---
+
+## agentguard.toml
+
+```toml
+[project]
+name = "my-project"
+default = "conservative"
+
+[deny]
+files = [".env", ".env.*", "secrets/**"]
+
+[ask]
+files = ["Cargo.lock"]
+
+[write]
+files = ["src/**"]
+
+[read]
+files = ["README.md"]
+```
+
+---
+
+## Architecture
+
+```
+Probe/Poller → Classifier → Orchestrator → Policy + Enforce + Audit + Store
+                                     |
+                                     +→ IPC server (named pipe) → CLI / TUI
+```
+
+### Crates
+
+| Crate | Role |
+|---|---|
+| `agentguard-core` | Base types and shared errors |
+| `agentguard-manifest` | `agentguard.toml` parser + glob compiler |
+| `agentguard-policy` | Decision engine |
+| `agentguard-store` | SQLite persistence |
+| `agentguard-probe` | Process polling + AI agent classification |
+| `agentguard-enforce` | ACL/ACE enforcement on Windows |
+| `agentguard-ipc` | Named-pipe protocol (client + server) |
+| `agentguard-notify` | User prompts and notifications |
+| `agentguard-audit` | Audit logging |
+| `agentguard-daemon` | Main orchestrator / service |
+| `agentguard-cli` | CLI entrypoint (all commands) |
+| `agentguard-tui` | Terminal dashboard (ratatui) |
+| `agentguard-mascot` | Optional terminal mascot |
+
+---
+
+## Build from source
+
+```bash
+cargo build --workspace --release
+
+# Binaries in target/release/
+#   agentguard.exe          # CLI + TUI
+#   agentguard-daemon.exe   # Background daemon
+```
+
+---
+
+## Docs
+
+- [Architecture](docs/01-architecture.md)
+- [Core types](docs/02-core-types.md)
+- [Manifest & policy](docs/03-manifest-policy.md)
+- [Storage & audit](docs/04-storage-audit.md)
+- [Detection & enforcement](docs/05-detection-enforcement.md)
+- [IPC, daemon & CLI](docs/06-ipc-daemon-cli.md)
+- [ADR index](docs/adr/README.md)
+
+---
+
+## License
+
+MIT

@@ -7,9 +7,29 @@ target/
 *.db-wal
 *.db-shm
 
-# Driver binary (C++)
-driver/*.sys
-driver/*.pdb
+# Phase 2 — kernel driver (not pushed until ready)
+driver/
+
+# Phase 3/4 — future modules (not pushed until ready)
+modules/
+
+# Phase 2 planning ADRs (internal only)
+docs/adr/007-phase2-minifilter-enforcement-plan.md
+docs/adr/008-simplified-everyone-deny-enforcement.md
+
+# Phase 2 audit reports (internal only)
+AUDIT-REPORT-PHASE2.md
+
+# Test artifacts (not for release)
+carpetatest.txt
+errors.txt
+hotreload-test.txt
+test.pem
+watcher-test.txt
+a
+
+# Secrets
+.env
 
 # IDE
 .vscode/
@@ -18,4 +38,3 @@ driver/*.pdb
 # OS files
 Thumbs.db
 *.tmp
-a
