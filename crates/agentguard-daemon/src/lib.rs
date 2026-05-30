@@ -122,7 +122,6 @@ pub async fn run_daemon() {
     });
 
     println!("AgentGuard Daemon v{} started", env!("CARGO_PKG_VERSION"));
-    println!("Press Ctrl+C to stop.");
     println!("Dynamic agent detection: ACTIVE (2000ms polling)");
     println!("File watcher: ACTIVE (5000ms polling)");
 

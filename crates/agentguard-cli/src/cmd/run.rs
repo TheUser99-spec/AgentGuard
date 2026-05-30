@@ -1,21 +1,18 @@
 //! agentguard run — starts daemon + TUI together.
 //!
-//! Spawns agentguard-daemon.exe as a child process, waits for IPC,
-//! then opens the TUI dashboard. Ctrl+C in the TUI sends Shutdown IPC
-//! to the daemon.
+//! Spawns agentguard-daemon.exe as a detached background process (no window,
+//! no console output), waits for IPC, then opens the TUI dashboard.
 
 use agentguard_core::{GuardError, GuardResult};
 use agentguard_ipc::IpcClient;
 use std::time::Duration;
 
 pub async fn run() -> GuardResult<()> {
-    // Check if daemon is already running
     if IpcClient::new().get_status().await.is_ok() {
         eprintln!("+ Daemon already running, launching TUI...");
         return super::ui::run().await;
     }
 
-    // Spawn daemon
     let daemon_exe = daemon_binary_path();
     if !daemon_exe.exists() {
         return Err(GuardError::IpcError(format!(
@@ -28,14 +25,19 @@ pub async fn run() -> GuardResult<()> {
     {
         use std::os::windows::process::CommandExt;
         const CREATE_NEW_PROCESS_GROUP: u32 = 0x00000200;
+        const CREATE_NO_WINDOW: u32 = 0x08000000;
         std::process::Command::new(&daemon_exe)
-            .creation_flags(CREATE_NEW_PROCESS_GROUP)
+            .creation_flags(CREATE_NEW_PROCESS_GROUP | CREATE_NO_WINDOW)
+            .stdout(std::process::Stdio::null())
+            .stderr(std::process::Stdio::null())
             .spawn()
             .map_err(|e| GuardError::IpcError(format!("Failed to spawn daemon: {e}")))?;
     }
     #[cfg(not(windows))]
     {
         std::process::Command::new(&daemon_exe)
+            .stdout(std::process::Stdio::null())
+            .stderr(std::process::Stdio::null())
             .spawn()
             .map_err(|e| GuardError::IpcError(format!("Failed to spawn daemon: {e}")))?;
     }
@@ -51,7 +53,7 @@ pub async fn run() -> GuardResult<()> {
     }
 
     Err(GuardError::IpcError(
-        "Daemon not responding after 3s — check daemon output".into(),
+        "Daemon not responding after 3s".into(),
     ))
 }
 
