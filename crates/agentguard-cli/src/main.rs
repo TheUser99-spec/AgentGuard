@@ -143,6 +143,20 @@ pub enum AuditCommands {
         #[arg(long, short, default_value = "25")]
         limit: usize,
     },
+    /// Export audit logs to a file
+    Export {
+        /// Output format: csv or txt
+        #[arg(long, short, default_value = "csv")]
+        format: String,
+        /// Output file path
+        #[arg(long, short, default_value = "agentguard-audit.csv")]
+        output: PathBuf,
+        /// Max number of events to export (default: all)
+        #[arg(long, short)]
+        limit: Option<usize>,
+    },
+    /// Show the audit database path
+    Db,
 }
 
 #[derive(Subcommand)]
@@ -199,6 +213,8 @@ async fn main() {
         },
         Commands::Audit { cmd } => match cmd {
             AuditCommands::List { limit } => cmd::audit::list(limit).await,
+            AuditCommands::Export { format, output, limit } => cmd::audit::export_logs(format, output, limit).await,
+            AuditCommands::Db => cmd::audit::db_path(),
         },
         Commands::Agent { cmd } => match cmd {
             AgentCommands::Add {
@@ -497,6 +513,7 @@ mod tests {
         match cli.command {
             Commands::Audit { cmd } => match cmd {
                 AuditCommands::List { limit } => assert_eq!(limit, 25),
+                _ => {}
             },
             _ => panic!("expected Audit"),
         }
@@ -508,6 +525,7 @@ mod tests {
         match cli.command {
             Commands::Audit { cmd } => match cmd {
                 AuditCommands::List { limit } => assert_eq!(limit, 10),
+                _ => {}
             },
             _ => panic!("expected Audit"),
         }
