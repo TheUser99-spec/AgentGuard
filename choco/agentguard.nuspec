@@ -5,9 +5,9 @@
     <version>0.1.2</version>
     <title>AgentGuard</title>
     <authors>TheUser99-spec</authors>
+    <owners>TheUser99-spec</owners>
     <projectUrl>https://github.com/TheUser99-spec/AgentGuard</projectUrl>
-    <iconUrl>https://raw.githubusercontent.com/TheUser99-spec/AgentGuard/main/.github/icon.png</iconUrl>
-    <license type="expression">MIT</license>
+    <licenseUrl>https://opensource.org/licenses/MIT</licenseUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <projectSourceUrl>https://github.com/TheUser99-spec/AgentGuard</projectSourceUrl>
     <docsUrl>https://github.com/TheUser99-spec/AgentGuard#readme</docsUrl>
