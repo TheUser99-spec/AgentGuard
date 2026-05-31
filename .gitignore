@@ -38,3 +38,11 @@ a
 # OS files
 Thumbs.db
 *.tmp
+
+# Landing page build artifacts
+landing/node_modules/
+landing/dist/
+landing/.astro/
+landing/.astro-*.pid
+landing/.astro-*.log
+landing/.astro-*.err.log
