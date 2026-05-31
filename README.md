@@ -10,45 +10,69 @@
 
 > **Your AI coding agent just tried to write to `~/.ssh/id_rsa`. AgentGuard stopped it.**
 
-AgentGuard is a Windows security layer that sits between your filesystem and any AI coding agent — Claude Code, Cursor, OpenCode, Copilot, Windsurf, you name it. It watches every file operation in real time and enforces exactly what each agent can read, write, or delete.
+---
 
-<br>
+## What is AgentGuard
+
+AgentGuard is a Windows security layer that sits between your filesystem and any AI coding agent. It applies real Windows ACLs so the OS kernel itself returns `ACCESS_DENIED` before the agent ever touches a protected file.
+
+It works with Claude Code, Cursor, OpenCode, Copilot, Windsurf, Aider, and others.
+
+---
+
+## Why it exists
+
+AI agents have unrestricted filesystem access. They can read your secrets, delete your migrations, or wipe your config files — without asking, without warning. Real incidents happen every day.
+
+AgentGuard draws a boundary. The agent can edit your source code. It can never touch your `.env`, your SSH keys, or your policy files.
+
+---
+
+## Demo
 
 <p align="center">
   <i>🎬 Demo GIF coming soon</i>
   <br>
-  <sub><i><code>agentguard run</code> and watch the dashboard light up.</i></sub>
+  <sub><code>agentguard run</code> and watch the dashboard light up.</sub>
 </p>
-
-<br>
 
 ---
 
-## 📦 Install
+## Install
 
 ```powershell
 irm https://raw.githubusercontent.com/TheUser99-spec/AgentGuard/main/install.ps1 | iex
 ```
 
+---
+
+## Basic usage
+
 ```powershell
-agentguard init       # creates agentguard.toml, starts daemon, registers your project
-agentguard run        # opens the dashboard
+agentguard init       # Creates agentguard.toml, starts daemon, registers your project
+agentguard run        # Opens the live dashboard
 ```
+
+That's it. Your project is protected.
 
 ---
 
-## 🔄 Daemon lifecycle
+## Advanced
 
-The daemon runs **invisible** (no console window) and **survives terminal close**.
+### Daemon lifecycle
+
+The daemon runs invisible in the background — no console window, survives terminal close.
 
 | Command | What it does |
 |---|---|
-| `agentguard daemon start` | Start daemon (invisible, background) |
-| `agentguard stop` | Stop daemon (releases Windows file locks) |
-| `agentguard run` | Daemon + TUI together |
-| `agentguard ui` | TUI only (daemon already running) |
+| `agentguard daemon start` | Start daemon (invisible) |
+| `agentguard stop` | Stop daemon and release file locks |
+| `agentguard run` | Daemon + dashboard together |
+| `agentguard ui` | Dashboard only |
+| `agentguard status` | Live status: projects, agents, events, blocks |
+| `agentguard update` | Auto-update from GitHub |
 
-**Important:** While the daemon is running, protected files are locked by Windows ACLs. To edit `agentguard.toml`, `.env`, or any `[deny]` file, stop the daemon first:
+While the daemon runs, denied files are locked by Windows ACLs. To edit protected files:
 
 ```powershell
 agentguard stop
@@ -56,52 +80,24 @@ agentguard stop
 agentguard daemon start
 ```
 
-Pressing `Q` in the TUI also stops the daemon automatically.
+Press `Q` in the dashboard to stop the daemon.
 
----
+### Permission model
 
-## 🔒 100% local — no accounts, no cloud, no telemetry
+Six buckets ordered by priority. **Deny always wins.**
 
-AgentGuard runs entirely on your machine. There is no login, no authentication, no cloud backend, no analytics, and no telemetry. Everything stays local:
+| Priority | Bucket | Meaning |
+|---|---|---|
+| 1 | `[deny]` | Complete block |
+| 2 | `[ask]` | User must approve |
+| 3 | `[full]` | Unrestricted |
+| 4 | `[delete]` | Read + Delete |
+| 5 | `[write]` | Read + Write |
+| 6 | `[read]` | Read only |
 
-- **No account required** — just download and run
-- **No internet needed** — the daemon and TUI work fully offline
-- **Your data never leaves your PC** — audit logs stored in local SQLite (`%APPDATA%\AgentGuard\agentguard.db`)
-- **No API keys, no registration, no phone number** — AgentGuard doesn't even know who you are
+When no rule matches: read allowed, write asks, delete denied.
 
-Your files, your rules, your machine. Maximum privacy by design.
-
----
-
-## ⚔️ Threat Model
-
-| Threat | Mitigation |
-|---|---|
-| Agent reads secrets (`.env`, `.pem`, `.key`) | `[deny]` bucket — blocked at ACL level |
-| Agent deletes critical files | OS-level DACL prevents handle acquisition |
-| Agent spawns child processes | `Inherited` label — same policy applies |
-| Agent modifies `agentguard.toml` | Mandatory deny — always injected |
-
----
-
-## 🚀 Commands
-
-| Command | What it does |
-|---|---|
-| `agentguard init` | Creates `agentguard.toml`, starts daemon, registers project |
-| `agentguard run` | Starts daemon + opens TUI dashboard |
-| `agentguard stop` | Stops the daemon (releases file locks) |
-| `agentguard status` | Live status: projects, agents, events, blocks |
-| `agentguard project validate` | Validates your `agentguard.toml` |
-| `agentguard project check -f <file> -o <op>` | Dry-run file access check |
-| `agentguard project verify` | Audits effective protection coverage |
-| `agentguard global add deny "*.env"` | Add a global deny rule |
-| `agentguard audit list` | View audit history |
-| `agentguard update` | Auto-update from GitHub |
-
----
-
-## 📝 agentguard.toml
+### agentguard.toml
 
 ```toml
 [project]
@@ -121,27 +117,43 @@ files = ["src/**", "tests/**"]
 files = ["README.md", "docs/**"]
 ```
 
-Bucket priority: `deny → ask → full → delete → write → read`. Deny always wins.
+### All commands
 
----
+| Command | What it does |
+|---|---|
+| `agentguard init` | Create agentguard.toml, start daemon, register project |
+| `agentguard run` | Start daemon + open dashboard |
+| `agentguard stop` | Stop daemon (releases file locks) |
+| `agentguard status` | Live status: projects, agents, events, blocks |
+| `agentguard project validate` | Validate agentguard.toml |
+| `agentguard project check -f <f> -o <op>` | Dry-run file access check |
+| `agentguard project verify` | Audit protection coverage |
+| `agentguard global add deny "*.env"` | Add global deny rule |
+| `agentguard audit list` | View audit history |
+| `agentguard update` | Auto-update from GitHub |
 
-## 🗺️ Roadmap
+### Anti-bypass
 
-- [x] Process detection & AI agent classification
-- [x] `agentguard.toml` parser with glob-based policy engine
-- [x] Windows ACL/ACE enforcement
-- [x] SQLite audit log
-- [x] IPC protocol (20 request types)
-- [x] Terminal dashboard (ratatui, 60fps)
-- [x] Unified CLI: `init`, `run`, `ui`, `stop`, `update`
-- [x] Invisible daemon (no console, survives terminal close)
-- [ ] Kernel minifilter driver (ring 0)
-- [ ] Windows Service integration
-- [ ] Cross-platform (macOS/Linux)
+AgentGuard applies three layers of Windows security to each denied file so even if one layer is bypassed, the others hold.
 
----
+| Layer | Mechanism | Blocks |
+|---|---|---|
+| 1 | DENY ACE → Everyone → GENERIC_ALL | Read, write, delete |
+| 2 | DENY ACE → Everyone → WRITE_DAC, WRITE_OWNER, DELETE | ACL modification, ownership change |
+| 3 | MIC label → High Integrity + NO_WRITE_UP | `icacls /remove:d` bypass |
 
-## 🏗️ Build from source
+### 100% local
+
+No account, no cloud, no telemetry.
+
+- No login required
+- Works fully offline
+- Audit logs in local SQLite (`%APPDATA%\AgentGuard\agentguard.db`)
+- No API keys, no registration, no phone number
+
+Your files, your rules, your machine.
+
+### Build from source
 
 ```bash
 git clone https://github.com/TheUser99-spec/AgentGuard.git
@@ -149,29 +161,43 @@ cd AgentGuard
 cargo build --workspace --release
 ```
 
----
-
-## 📚 Docs
+### More docs
 
 | Doc | Topic |
 |---|---|
+| [Quickstart](docs/quickstart.md) | Complete guide |
 | [Architecture](docs/01-architecture.md) | System design |
 | [Core types](docs/02-core-types.md) | Permission model |
-| [Manifest & policy](docs/03-manifest-policy.md) | `agentguard.toml` |
+| [Manifest & policy](docs/03-manifest-policy.md) | agentguard.toml |
 | [Storage & audit](docs/04-storage-audit.md) | SQLite schema |
-| [Detection & enforcement](docs/05-detection-enforcement.md) | Process classification |
+| [Detection](docs/05-detection-enforcement.md) | Process classification |
 | [IPC & daemon/CLI](docs/06-ipc-daemon-cli.md) | Protocol + lifecycle |
 | [ADR index](docs/adr/README.md) | Architecture decisions |
 
 ---
 
-## ⚖️ License
+## Roadmap
 
-AgentGuard is open-source under the **Apache 2.0 License**.
-See the [LICENSE](LICENSE) file for full terms.
+- [x] Process detection & AI agent classification
+- [x] agentguard.toml parser with glob-based policy engine
+- [x] Windows ACL/ACE enforcement
+- [x] Three-layer anti-bypass (DENY ACEs + MIC labels)
+- [x] SQLite audit log
+- [x] IPC protocol (20 request types)
+- [x] Terminal dashboard (ratatui, 60fps)
+- [x] Unified CLI
+- [x] Invisible daemon
+- [ ] Kernel minifilter driver (Phase 2)
+- [ ] Agent-only blocking (no need to stop daemon)
+- [ ] Cross-platform (macOS/Linux)
 
-**Important:** AgentGuard comes with **no warranty**.
-See [DISCLAIMER.md](DISCLAIMER.md) for details about liability and security limitations.
+---
+
+## License
+
+AgentGuard is open-source under the **Apache 2.0 License**. See [LICENSE](LICENSE).
+
+Comes with **no warranty**. See [DISCLAIMER.md](DISCLAIMER.md).
 
 ---
 
