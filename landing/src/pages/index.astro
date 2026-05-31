@@ -1,0 +1,58 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from '../components/Hero.astro';
+import WhyAgentGuard from '../components/WhyAgentGuard.astro';
+import HowItWorks from '../components/HowItWorks.astro';
+import RealExample from '../components/RealExample.astro';
+import PolicyCards from '../components/PolicyCards.astro';
+import InstallSection from '../components/InstallSection.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+
+const title = 'AgentGuard - OS-level Protection for AI Coding Agents';
+const description = 'AgentGuard blocks dangerous file access before AI agents touch your secrets. 100% local, no accounts, no cloud, no telemetry. Windows ACL enforcement.';
+const homeStructuredData = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'WebSite',
+      name: 'AgentGuard',
+      url: 'https://TheUser99-spec.github.io/AgentGuard',
+      description: description,
+      potentialAction: {
+        '@type': 'SearchAction',
+        target: 'https://TheUser99-spec.github.io/AgentGuard/docs#{search_term_string}',
+        'query-input': 'required name=search_term_string'
+      }
+    },
+    {
+      '@type': 'SoftwareApplication',
+      name: 'AgentGuard',
+      applicationCategory: 'SecurityApplication',
+      operatingSystem: 'Windows',
+      description: description,
+      url: 'https://TheUser99-spec.github.io/AgentGuard',
+      offers: {
+        '@type': 'Offer',
+        price: '0',
+        priceCurrency: 'USD'
+      },
+      author: {
+        '@type': 'Person',
+        name: 'AgentGuard Contributors'
+      }
+    }
+  ]
+});
+---
+
+<Base title={title} description={description} structuredData={homeStructuredData}>
+  <main>
+    <Hero />
+    <WhyAgentGuard />
+    <HowItWorks />
+    <RealExample />
+    <PolicyCards />
+    <InstallSection />
+    <SiteFooter />
+  </main>
+</Base>

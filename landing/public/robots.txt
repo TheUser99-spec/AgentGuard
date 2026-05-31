@@ -1,0 +1,31 @@
+# AgentGuard Landing - robots.txt
+# Allows AI crawlers to index our content for better AI search discovery.
+
+User-agent: GPTBot
+Disallow:
+
+User-agent: ChatGPT-User
+Disallow:
+
+User-agent: Claude-Web
+Disallow:
+
+User-agent: CCBot
+Disallow:
+
+User-agent: Google-Extended
+Disallow:
+
+User-agent: PerplexityBot
+Disallow:
+
+User-agent: anthropic-ai
+Disallow:
+
+User-agent: cohere-ai
+Disallow:
+
+User-agent: *
+Disallow:
+
+Sitemap: https://TheUser99-spec.github.io/AgentGuard/sitemap.xml

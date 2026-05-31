@@ -1,0 +1,359 @@
+---
+import Base from '../layouts/Base.astro';
+
+const title = 'AgentGuard Docs - Commands, Daemon & Architecture';
+const description = 'Complete reference for AgentGuard: commands, daemon lifecycle, permission model, agentguard.toml configuration, and architecture.';
+const docsStructuredData = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'TechArticle',
+  headline: title,
+  description: description,
+  author: { '@type': 'Person', name: 'AgentGuard Contributors' },
+  datePublished: '2025-01-01',
+  dateModified: '2025-06-01',
+  proficiencyLevel: 'Beginner',
+  about: {
+    '@type': 'SoftwareApplication',
+    name: 'AgentGuard',
+    applicationCategory: 'SecurityApplication',
+    operatingSystem: 'Windows'
+  }
+});
+---
+
+<Base title={title} description={description} canonical="https://TheUser99-spec.github.io/AgentGuard/docs" structuredData={docsStructuredData}>
+  <main>
+    <nav class="site-nav" aria-label="Primary navigation">
+      <a class="brand-mark" href="/" aria-label="AgentGuard home">
+        <span>AgentGuard</span>
+        <span class="brand-dot" aria-hidden="true"></span>
+      </a>
+      <div class="nav-links">
+        <a href="/">Home</a>
+        <a href="/docs" class="is-active">Docs</a>
+        <a href="/development-path">Development Path</a>
+      </div>
+    </nav>
+
+    <section class="section" style="padding-top:100px">
+      <div class="site-shell">
+        <div class="docs-header">
+          <p class="section-kicker">Documentation</p>
+          <h1 class="section-title" style="font-size:clamp(36px,5vw,56px)">Everything you need to protect your code from AI agents.</h1>
+          <p class="section-copy" style="max-width:600px">AgentGuard sits between your filesystem and any AI agent. This guide covers every command, concept, and configuration option.</p>
+        </div>
+
+        <nav class="docs-toc" aria-label="Table of contents">
+          <span>On this page</span>
+          <a href="#getting-started">Getting Started</a>
+          <a href="#daemon-lifecycle">Daemon Lifecycle</a>
+          <a href="#all-commands">All Commands</a>
+          <a href="#permission-model">Permission Model</a>
+          <a href="#agentguard-toml">agentguard.toml</a>
+          <a href="#anti-bypass">Anti-Bypass</a>
+          <a href="#phase-1-vs-phase-2">Phase 1 vs Phase 2</a>
+        </nav>
+      </div>
+    </section>
+
+    <!-- GETTING STARTED -->
+    <section class="section" id="getting-started" style="padding-top:0">
+      <div class="site-shell docs-content">
+        <h2 class="docs-h2">Getting Started</h2>
+
+        <p class="docs-p">Install AgentGuard with a single PowerShell command. No accounts, no cloud, no telemetry.</p>
+
+        <div class="code-block">
+          <div class="code-block-bar">
+            <span class="code-block-lang">PowerShell</span>
+            <button class="code-block-copy" type="button" data-copy="irm https://raw.githubusercontent.com/TheUser99-spec/AgentGuard/main/install.ps1 | iex">Copy</button>
+          </div>
+          <pre><code>irm https://raw.githubusercontent.com/TheUser99-spec/AgentGuard/main/install.ps1 | iex</code></pre>
+        </div>
+
+        <p class="docs-p">Once installed, two commands get you protected:</p>
+
+        <div class="code-block">
+          <div class="code-block-bar">
+            <span class="code-block-lang">Terminal</span>
+          </div>
+          <pre><code>agentguard init       <span class="code-comment"># Creates agentguard.toml, starts daemon, registers your project</span>
+agentguard run        <span class="code-comment"># Opens the live terminal dashboard (60fps)</span></code></pre>
+        </div>
+
+        <p class="docs-p">That's it. AgentGuard is now running. Any AI agent that tries to touch a denied file gets <code>ACCESS_DENIED</code> from the Windows kernel.</p>
+      </div>
+    </section>
+
+    <!-- DAEMON LIFECYCLE -->
+    <section class="section" id="daemon-lifecycle">
+      <div class="site-shell docs-content">
+        <h2 class="docs-h2">Daemon Lifecycle</h2>
+        <p class="docs-p">The daemon runs invisibly in the background - no console window, survives terminal close. It applies and removes Windows ACLs as protections change.</p>
+
+        <table class="docs-table">
+          <thead><tr><th>Command</th><th>What it does</th></tr></thead>
+          <tbody>
+            <tr><td><code>agentguard daemon start</code></td><td>Start daemon invisibly in the background</td></tr>
+            <tr><td><code>agentguard stop</code></td><td>Stop daemon - releases all Windows file locks</td></tr>
+            <tr><td><code>agentguard run</code></td><td>Daemon + TUI dashboard together</td></tr>
+            <tr><td><code>agentguard ui</code></td><td>TUI only (daemon must already be running)</td></tr>
+            <tr><td><code>agentguard status</code></td><td>Live view: projects, agents, events, blocks</td></tr>
+            <tr><td><code>agentguard update</code></td><td>Auto-update from GitHub</td></tr>
+          </tbody>
+        </table>
+
+        <div class="docs-note docs-note--warn">
+          <strong>Understanding file locks</strong>
+          <p>While the daemon runs, files matching <code>[deny]</code> rules are locked by Windows ACLs. <strong>You cannot edit them either.</strong> To modify <code>.env</code>, <code>agentguard.toml</code>, or any denied file:</p>
+          <div class="code-block" style="margin:10px 0">
+            <pre><code>agentguard stop
+# edit your files safely...
+agentguard daemon start</code></pre>
+          </div>
+          <p>You can also press <code>Q</code> in the TUI dashboard to stop the daemon, or use <code>agentguard project off</code> to temporarily disable protection without stopping the daemon.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ALL COMMANDS -->
+    <section class="section" id="all-commands">
+      <div class="site-shell docs-content">
+        <h2 class="docs-h2">All Commands</h2>
+        <p class="docs-p">Every command available. Use <code>agentguard --help</code> for the full CLI reference.</p>
+
+        <h3 class="docs-h3">Project</h3>
+        <table class="docs-table">
+          <thead><tr><th>Command</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>agentguard init</code></td><td>Create agentguard.toml, start daemon, register project</td></tr>
+            <tr><td><code>agentguard project validate</code></td><td>Validate agentguard.toml syntax and rules</td></tr>
+            <tr><td><code>agentguard project check -f &lt;file&gt; -o &lt;op&gt;</code></td><td>Dry-run: what would happen if an agent tried <code>&lt;op&gt;</code> on <code>&lt;file&gt;</code></td></tr>
+            <tr><td><code>agentguard project verify</code></td><td>Audit: counts effective deny coverage vs expected</td></tr>
+            <tr><td><code>agentguard project on</code></td><td>Turn protection ON for current project</td></tr>
+            <tr><td><code>agentguard project off</code></td><td>Turn protection OFF (files become accessible)</td></tr>
+          </tbody>
+        </table>
+
+        <h3 class="docs-h3">Global Rules</h3>
+        <table class="docs-table">
+          <thead><tr><th>Command</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>agentguard global add deny "*.env"</code></td><td>Add a global deny rule (applies to all projects)</td></tr>
+            <tr><td><code>agentguard global add ask "Cargo.lock"</code></td><td>Add a global ask rule</td></tr>
+            <tr><td><code>agentguard global list</code></td><td>List all active global rules</td></tr>
+            <tr><td><code>agentguard global remove &lt;id&gt;</code></td><td>Remove a global rule by ID</td></tr>
+          </tbody>
+        </table>
+
+        <h3 class="docs-h3">Audit & Monitoring</h3>
+        <table class="docs-table">
+          <thead><tr><th>Command</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>agentguard status</code></td><td>Live overview: running projects, active agents, blocked events, rules loaded</td></tr>
+            <tr><td><code>agentguard audit list</code></td><td>View recent audit history (blocked/allowed events)</td></tr>
+            <tr><td><code>agentguard audit tail</code></td><td>Follow audit events in real time (like tail -f)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- PERMISSION MODEL -->
+    <section class="section" id="permission-model">
+      <div class="site-shell docs-content">
+        <h2 class="docs-h2">Permission Model</h2>
+        <p class="docs-p">AgentGuard uses a priority-ordered bucket system. <strong>Deny always wins</strong> - even if a file matches multiple buckets, the highest priority takes effect.</p>
+
+        <div class="priority-chain" style="margin:28px 0">
+          <span class="priority-label">High</span>
+          <div class="priority-bucket bucket-red"><strong>deny</strong><span>No access</span></div>
+          <span class="priority-arrow">&rsaquo;</span>
+          <div class="priority-bucket bucket-amber"><strong>ask</strong><span>User approves</span></div>
+          <span class="priority-arrow">&rsaquo;</span>
+          <div class="priority-bucket bucket-green"><strong>full</strong><span>All allowed</span></div>
+          <span class="priority-arrow">&rsaquo;</span>
+          <div class="priority-bucket bucket-blue"><strong>delete</strong><span>Read + Delete</span></div>
+          <span class="priority-arrow">&rsaquo;</span>
+          <div class="priority-bucket bucket-blue"><strong>write</strong><span>Read + Write</span></div>
+          <span class="priority-arrow">&rsaquo;</span>
+          <div class="priority-bucket bucket-blue"><strong>read</strong><span>Read only</span></div>
+          <span class="priority-label" style="margin-left:8px">Low</span>
+        </div>
+
+        <table class="docs-table" style="margin-top:28px">
+          <thead><tr><th>Bucket</th><th>Read</th><th>Write</th><th>Delete</th><th>When to use</th></tr></thead>
+          <tbody>
+            <tr><td><code>[deny]</code></td><td>No</td><td>No</td><td>No</td><td>Secrets, keys, policy files</td></tr>
+            <tr><td><code>[ask]</code></td><td>Prompt</td><td>Prompt</td><td>Prompt</td><td>Sensitive but legitimate operations</td></tr>
+            <tr><td><code>[full]</code></td><td>Yes</td><td>Yes</td><td>Yes</td><td>Trusted project directories</td></tr>
+            <tr><td><code>[delete]</code></td><td>Yes</td><td>No</td><td>Yes</td><td>Files safe to read and delete, not modify</td></tr>
+            <tr><td><code>[write]</code></td><td>Yes</td><td>Yes</td><td>No</td><td>Source code and docs</td></tr>
+            <tr><td><code>[read]</code></td><td>Yes</td><td>No</td><td>No</td><td>Reference files, README</td></tr>
+          </tbody>
+        </table>
+
+        <div class="docs-note">
+          <strong>Conservative default</strong>
+          <p>When no rule matches a file: read is <strong>allowed</strong>, write <strong>asks</strong> the user, and delete is <strong>denied</strong>.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- agentguard.toml -->
+    <section class="section" id="agentguard-toml">
+      <div class="site-shell docs-content">
+        <h2 class="docs-h2">agentguard.toml</h2>
+        <p class="docs-p">The configuration file lives at the root of your project. It defines what each bucket protects using glob patterns.</p>
+
+        <div class="code-block">
+          <div class="code-block-bar">
+            <span class="code-block-lang">agentguard.toml</span>
+            <button class="code-block-copy" type="button" data-copy="[project]
+name = &quot;my-project&quot;
+default = &quot;conservative&quot;
+
+[deny]
+files = [&quot;.env&quot;, &quot;.env.*&quot;, &quot;secrets/**&quot;, &quot;*.pem&quot;, &quot;*.key&quot;, &quot;agentguard.toml&quot;]
+
+[ask]
+files = [&quot;Cargo.lock&quot;, &quot;package-lock.json&quot;, &quot;migrations/**&quot;]
+
+[write]
+files = [&quot;src/**&quot;, &quot;tests/**&quot;, &quot;docs/**&quot;]
+
+[read]
+files = [&quot;README.md&quot;, &quot;docs/**&quot;]">Copy</button>
+          </div>
+          <pre><code><span class="code-keyword">[project]</span>
+<span class="code-prop">name</span> = <span class="code-string">"my-project"</span>
+<span class="code-prop">default</span> = <span class="code-string">"conservative"</span>
+
+<span class="code-keyword">[deny]</span>
+<span class="code-prop">files</span> = [<span class="code-string">".env"</span>, <span class="code-string">".env.*"</span>, <span class="code-string">"secrets/**"</span>, <span class="code-string">"*.pem"</span>, <span class="code-string">"*.key"</span>, <span class="code-string">"agentguard.toml"</span>]
+
+<span class="code-keyword">[ask]</span>
+<span class="code-prop">files</span> = [<span class="code-string">"Cargo.lock"</span>, <span class="code-string">"package-lock.json"</span>, <span class="code-string">"migrations/**"</span>]
+
+<span class="code-keyword">[write]</span>
+<span class="code-prop">files</span> = [<span class="code-string">"src/**"</span>, <span class="code-string">"tests/**"</span>, <span class="code-string">"docs/**"</span>]
+
+<span class="code-keyword">[read]</span>
+<span class="code-prop">files</span> = [<span class="code-string">"README.md"</span>, <span class="code-string">"docs/**"</span>]</code></pre>
+        </div>
+
+        <div class="docs-note">
+          <strong>Mandatory deny patterns</strong>
+          <p>The daemon <strong>always</strong> denies these paths, even if they're missing from your config:</p>
+          <p style="font-family:var(--mono);font-size:13px;line-height:1.8;margin-top:10px">
+            agentguard.toml &middot; .env &middot; .env.* &middot; .git/** &middot; **/*.key &middot; **/*.pem &middot; **/*.p12 &middot; **/*.pfx
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ANTI-BYPASS -->
+    <section class="section" id="anti-bypass">
+      <div class="site-shell docs-content">
+        <h2 class="docs-h2">Anti-Bypass Protection</h2>
+        <p class="docs-p">AgentGuard applies three independent layers of Windows security to each denied file. Even if one layer is bypassed, the others still hold.</p>
+
+        <table class="docs-table">
+          <thead><tr><th>Layer</th><th>Mechanism</th><th>Blocks</th><th>Bypass attempt</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>1</strong></td>
+              <td><code>DENY ACE &rarr; Everyone &rarr; GENERIC_ALL</code></td>
+              <td>Read, write, delete</td>
+              <td style="color:var(--muted);font-size:13px">None - kernel enforces</td>
+            </tr>
+            <tr>
+              <td><strong>2</strong></td>
+              <td><code>DENY ACE &rarr; Everyone &rarr; WRITE_DAC | WRITE_OWNER | DELETE</code></td>
+              <td>ACL modification, ownership change, file deletion</td>
+              <td style="color:var(--muted);font-size:13px">Agent tries to remove ACLs</td>
+            </tr>
+            <tr>
+              <td><strong>3</strong></td>
+              <td><code>MIC label &rarr; High Integrity + NO_WRITE_UP</code></td>
+              <td>Writes from Medium-integrity processes</td>
+              <td style="color:var(--muted);font-size:13px">icacls /remove:d (blocked)</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p class="docs-p" style="margin-top:20px">Layer 3 is critical: even if an agent runs <code>icacls /remove:d</code> to strip the DENY ACE, it fails because the agent runs at Medium integrity and the file is labeled High integrity with NO_WRITE_UP. The kernel rejects the write regardless of ownership.</p>
+      </div>
+    </section>
+
+    <!-- PHASE 1 vs PHASE 2 -->
+    <section class="section" id="phase-1-vs-phase-2">
+      <div class="site-shell docs-content">
+        <h2 class="docs-h2">Phase 1 vs Phase 2</h2>
+
+        <div class="docs-note docs-note--warn">
+          <strong>Phase 1 (Current)</strong>
+          <p>Protection is active while the daemon runs. <code>agentguard stop</code> removes DENY ACEs and files become accessible. ACEs apply to Everyone (including you). There is a ~750ms polling window between agent detection and ACE application. Audit logs in SQLite are user-writable.</p>
+        </div>
+
+        <div class="docs-note docs-note--info">
+          <strong>Phase 2 (In Development - driver/)</strong>
+          <p>A C++ kernel minifilter driver pauses I/O IRPs inline at the kernel level. Protection survives daemon restart. Per-agent overrides and ask flow enforce in real time. Audit logs are tamper-proof at kernel level. <code>agentguard stop</code> no longer removes protection - the driver persists independently.</p>
+        </div>
+
+        <table class="docs-table" style="margin-top:28px">
+          <thead><tr><th></th><th>Phase 1</th><th>Phase 2</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Enforcement</strong></td><td>Windows ACLs</td><td>Kernel I/O interception</td></tr>
+            <tr><td><strong>Protection on daemon stop</strong></td><td>Removed</td><td>Persists (driver stays loaded)</td></tr>
+            <tr><td><strong>Per-operation control</strong></td><td>ACL-based</td><td>IRP-level pause & inspect</td></tr>
+            <tr><td><strong>Ask flow</strong></td><td>Not enforceable</td><td>IRP paused, waits for user</td></tr>
+            <tr><td><strong>Per-agent rules</strong></td><td>Stored, not evaluated</td><td>PID passed to daemon</td></tr>
+            <tr><td><strong>Audit integrity</strong></td><td>User-writable SQLite</td><td>Kernel-level, tamper-proof</td></tr>
+            <tr><td><strong>Bypass via killing daemon</strong></td><td>Possible</td><td>Blocked</td></tr>
+          </tbody>
+        </table>
+
+        <p class="docs-p" style="margin-top:24px">The kernel driver lives in <code>driver/agentguard.sys</code>. It communicates with the Rust daemon via IOCTLs on a device interface. It is optional - Phase 1 works entirely in user mode.</p>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="closer">
+      <div class="site-shell closer-grid">
+        <div class="closer-links">
+          <a href="https://github.com/TheUser99-spec/AgentGuard" target="_blank" rel="noreferrer">GitHub</a>
+          <a href="/docs">Docs</a>
+<a href="/development-path">Development Path</a>
+          <a href="https://github.com/TheUser99-spec/AgentGuard/blob/main/LICENSE" target="_blank" rel="noreferrer">License</a>
+        </div>
+      </div>
+    </footer>
+  </main>
+</Base>
+
+<script>
+  document.querySelectorAll('[data-copy]').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const text = btn.getAttribute('data-copy') ?? '';
+      try {
+        if (navigator.clipboard?.writeText) {
+          await navigator.clipboard.writeText(text);
+        } else {
+          const ta = document.createElement('textarea');
+          ta.value = text;
+          ta.style.position = 'fixed';
+          ta.style.opacity = '0';
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          ta.remove();
+        }
+        btn.textContent = 'Copied';
+        setTimeout(() => { btn.textContent = 'Copy'; }, 1400);
+      } catch {
+        btn.textContent = 'Copied';
+        setTimeout(() => { btn.textContent = 'Copy'; }, 1400);
+      }
+    });
+  });
+</script>
