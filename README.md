@@ -8,7 +8,7 @@
 
 <br>
 
-> **Your AI coding agent just tried to write to `~/.ssh/id_rsa`. AgentGuard stopped it.**
+> **AI coding tools can make mistakes. AgentGuard stops them before they touch your private files.**
 
 ---
 
