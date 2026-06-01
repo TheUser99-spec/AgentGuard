@@ -487,7 +487,7 @@ fn find_and_read_manifest_with_daemon_access(start: &Path) -> GuardResult<Projec
     };
 
     loop {
-        let candidate = current.join("agentguard.toml");
+        let candidate = current.join("phylax.toml");
         match read_manifest_with_daemon_access(&current, &candidate, false) {
             Ok(manifest) => return Ok(manifest),
             Err(e) => {
@@ -516,7 +516,7 @@ fn find_manifest_path_with_daemon_access(start: &Path) -> GuardResult<(PathBuf, 
     };
 
     loop {
-        let candidate = current.join("agentguard.toml");
+        let candidate = current.join("phylax.toml");
         match read_manifest_with_daemon_access(&current, &candidate, false) {
             Ok(manifest) => return Ok((candidate, manifest)),
             Err(e) => {
@@ -624,7 +624,7 @@ mod tests {
         let mut m = ProjectManifest::default();
         m.deny.files.push(".env".into());
         let missing = missing_mandatory_denies(&m);
-        assert!(missing.contains(&"agentguard.toml"));
+        assert!(missing.contains(&"phylax.toml"));
         assert!(missing.contains(&".git/**"));
         assert!(!missing.contains(&".env"));
     }
@@ -643,7 +643,7 @@ mod tests {
         let ws = tmp.path().join("ws");
         std::fs::create_dir_all(&ws).unwrap();
         std::fs::write(
-            ws.join("agentguard.toml"),
+            ws.join("phylax.toml"),
             r#"
 [project]
 name = "x"
@@ -668,7 +668,7 @@ default = "conservative"
         let nested = ws.join("src").join("deep");
         std::fs::create_dir_all(&nested).unwrap();
         std::fs::write(
-            ws.join("agentguard.toml"),
+            ws.join("phylax.toml"),
             r#"
 [project]
 name = "selected"

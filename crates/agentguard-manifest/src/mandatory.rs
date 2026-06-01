@@ -1,7 +1,7 @@
 use crate::ProjectManifest;
 
 pub const MANDATORY_DENY_PATTERNS: &[&str] = &[
-    "agentguard.toml",
+    "phylax.toml",
     ".env",
     ".env.*",
     ".git/**",
@@ -70,7 +70,7 @@ mod tests {
         let mut m = ProjectManifest::default();
         m.deny.files.push(".env".into());
         let missing = missing_mandatory_denies(&m);
-        assert!(missing.contains(&"agentguard.toml"));
+        assert!(missing.contains(&"phylax.toml"));
         assert!(missing.contains(&".git/**"));
         assert!(!missing.contains(&".env"));
     }

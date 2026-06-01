@@ -4,7 +4,7 @@ use agentguard_ipc::IpcClient;
 pub async fn run(no_create: bool, allow_unhealthy: bool) -> GuardResult<()> {
     let cwd = std::env::current_dir().map_err(agentguard_core::GuardError::Io)?;
 
-    let toml_path = cwd.join("agentguard.toml");
+    let toml_path = cwd.join("phylax.toml");
     if !no_create && !toml_path.exists() {
         eprint!("  Scanning project");
         let manifest = agentguard_manifest::auto_detect(&cwd);
@@ -26,17 +26,17 @@ pub async fn run(no_create: bool, allow_unhealthy: bool) -> GuardResult<()> {
 
         std::fs::write(&toml_path, content).map_err(agentguard_core::GuardError::Io)?;
         println!();
-        println!("+ Creado agentguard.toml (auto-detected)");
+        println!("+ Creado phylax.toml (auto-detected)");
     } else if toml_path.exists() {
-        println!("- agentguard.toml already exists, skipping creation");
+        println!("- phylax.toml already exists, skipping creation");
     }
 
     match ensure_daemon_running().await {
         Ok(()) => {}
         Err(e) => {
             println!("- Daemon not available: {e}");
-            println!("  Start it manually: cargo run -p agentguard-daemon");
-            println!("  Or: agentguard daemon start");
+            println!("  Start it manually: cargo run -p phylax-daemon");
+            println!("  Or: phylax daemon start");
             return Ok(());
         }
     }
@@ -63,11 +63,11 @@ pub async fn run(no_create: bool, allow_unhealthy: bool) -> GuardResult<()> {
                     report.effective_deny_paths,
                     report.total_deny_paths
                 );
-                println!("  Run `agentguard project verify` for detailed path diagnostics.");
+                println!("  Run `phylax project verify` for detailed path diagnostics.");
                 if !allow_unhealthy {
                     return Err(agentguard_core::GuardError::IpcError(
                         "init aborted: protection audit found unhealthy deny paths. \
-Use `agentguard project verify` to inspect and fix, or re-run with `--allow-unhealthy` (insecure)."
+Use `phylax project verify` to inspect and fix, or re-run with `--allow-unhealthy` (insecure)."
                             .to_string(),
                     ));
                 }
@@ -75,15 +75,15 @@ Use `agentguard project verify` to inspect and fix, or re-run with `--allow-unhe
         }
         Err(e) => {
             println!("! Could not run post-init protection audit: {e}");
-            println!("  Run `agentguard project verify` once daemon is ready.");
+            println!("  Run `phylax project verify` once daemon is ready.");
         }
     }
     println!();
-    println!("  Edita agentguard.toml para personalizar los permisos.");
+    println!("  Edita phylax.toml para personalizar los permisos.");
     println!("  El daemon recargara automaticamente cuando guardes cambios.");
     println!();
-    println!("  agentguard status              -> ver estado");
-    println!("  agentguard project check ...   -> dry-run de una operacion");
+    println!("  phylax status              -> ver estado");
+    println!("  phylax project check ...   -> dry-run de una operacion");
 
     Ok(())
 }

@@ -121,8 +121,8 @@ pub fn db_path() -> GuardResult<()> {
         .or_else(|_| std::env::var("USERPROFILE"))
         .unwrap_or_else(|_| ".".to_string());
     let path = std::path::PathBuf::from(appdata)
-        .join("AgentGuard")
-        .join("agentguard.db");
+        .join("phylax")
+        .join("phylax.db");
 
     println!("Audit database: {}", path.display());
     println!();

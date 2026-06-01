@@ -10,13 +10,13 @@ pub enum GuardError {
     Migration { version: u32, reason: String },
 
     // ── Manifest ──
-    #[error("failed to parse agentguard.toml: {0}")]
+    #[error("failed to parse phylax.toml: {0}")]
     ManifestParse(String),
 
     #[error("invalid glob pattern '{pattern}': {reason}")]
     InvalidGlob { pattern: String, reason: String },
 
-    #[error("agentguard.toml not found in '{path}'")]
+    #[error("phylax.toml not found in '{path}'")]
     ManifestNotFound { path: String },
 
     // ── Policy ──

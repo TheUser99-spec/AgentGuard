@@ -210,7 +210,7 @@ files = ["docs/**"]
         let root = std::fs::canonicalize(tmp.path()).unwrap();
         let root = strip_verbatim_prefix(root);
 
-        let toml_path = root.join("agentguard.toml");
+        let toml_path = root.join("phylax.toml");
         std::fs::write(&toml_path, "deny me").unwrap();
 
         let manifest = ProjectManifest::parse_str(
@@ -220,7 +220,7 @@ name = "test"
 default = "unrestricted"
 
 [deny]
-files = ["agentguard.toml"]
+files = ["phylax.toml"]
 "#,
         )
         .unwrap()

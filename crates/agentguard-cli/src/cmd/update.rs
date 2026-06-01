@@ -1,4 +1,4 @@
-//! agentguard update — auto-update from GitHub Releases.
+//! phylax update — auto-update from GitHub Releases.
 //!
 //! Fetches latest release info via GitHub API, downloads new binaries
 //! via PowerShell, and replaces current binaries via batch script.
@@ -18,7 +18,7 @@ pub async fn run(check_only: bool) -> GuardResult<()> {
 
     if check_only {
         println!("+ Update available: v{latest} (current: v{CURRENT_VERSION})");
-        println!("  Run `agentguard update` to install.");
+        println!("  Run `phylax update` to install.");
         return Ok(());
     }
 
@@ -32,7 +32,7 @@ async fn fetch_latest_version() -> GuardResult<String> {
     let ps = format!(
         r#"[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 try {{
-    $r = Invoke-RestMethod -Uri 'https://api.github.com/repos/{REPO}/releases/latest' -UserAgent 'agentguard-updater'
+    $r = Invoke-RestMethod -Uri 'https://api.github.com/repos/{REPO}/releases/latest' -UserAgent 'phylax-updater'
     Write-Output $r.tag_name
 }} catch {{
     Write-Error $_.Exception.Message
@@ -68,15 +68,15 @@ async fn download_and_replace(version: &str) -> GuardResult<()> {
         .to_path_buf();
 
     let tmp_dir = std::env::temp_dir();
-    let new_exe = tmp_dir.join("agentguard-new.exe");
+    let new_exe = tmp_dir.join("phylax-new.exe");
     let new_daemon = tmp_dir.join("phylax-daemon-new.exe");
-    let bat = tmp_dir.join("agentguard-update.bat");
+    let bat = tmp_dir.join("phylax-update.bat");
 
     let exe_url = format!(
-        "https://github.com/{REPO}/releases/download/v{version}/agentguard.exe"
+        "https://github.com/{REPO}/releases/download/v{version}/phylax.exe"
     );
 
-    // Download agentguard.exe via PowerShell
+    // Download phylax.exe via PowerShell
     download_via_ps(&exe_url, &new_exe)?;
 
     // Download daemon (optional)
@@ -87,7 +87,7 @@ async fn download_and_replace(version: &str) -> GuardResult<()> {
 
     // Write update batch script that replaces files after this process exits
     let new_exe_str = new_exe.display().to_string();
-    let exe_dest = exe_dir.join("agentguard.exe");
+    let exe_dest = exe_dir.join("phylax.exe");
     let daemon_dest = exe_dir.join("phylax-daemon.exe");
     let new_daemon_str = new_daemon.display().to_string();
 
@@ -123,7 +123,7 @@ fn download_via_ps(url: &str, dest: &std::path::Path) -> GuardResult<()> {
     let ps = format!(
         r#"[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 try {{
-    Invoke-WebRequest -Uri '{}' -OutFile '{}' -UserAgent 'agentguard-updater'
+    Invoke-WebRequest -Uri '{}' -OutFile '{}' -UserAgent 'phylax-updater'
     exit 0
 }} catch {{
     Write-Error $_.Exception.Message

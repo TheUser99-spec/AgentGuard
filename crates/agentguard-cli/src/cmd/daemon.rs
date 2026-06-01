@@ -20,14 +20,14 @@ pub async fn start() -> GuardResult<()> {
         // another one. This prevents split-brain/multi-daemon situations.
         if daemon_process_count() > 0 {
             return Err(GuardError::IpcError(
-                "daemon process already exists but IPC is inaccessible; refusing to spawn a second instance. Run `agentguard daemon restart` from the same privilege/session.".into(),
+                "daemon process already exists but IPC is inaccessible; refusing to spawn a second instance. Run `phylax daemon restart` from the same privilege/session.".into(),
             ));
         }
 
         let exe = daemon_exe_path();
         if !exe.exists() {
             return Err(GuardError::IpcError(format!(
-                "Daemon binary not found at {:?}. Build it first: cargo build -p agentguard-daemon",
+                "Daemon binary not found at {:?}. Build it first: cargo build -p phylax-daemon",
                 exe
             )));
         }
@@ -72,7 +72,7 @@ pub async fn start() -> GuardResult<()> {
     #[cfg(not(windows))]
     {
         println!("* Daemon only available on Windows.");
-        println!("  Dev: cargo run -p agentguard-daemon");
+        println!("  Dev: cargo run -p phylax-daemon");
         Ok(())
     }
 }

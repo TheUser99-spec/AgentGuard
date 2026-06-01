@@ -23,7 +23,7 @@ pub async fn run_watcher(
         tokio::select! {
             _ = tokio::time::sleep(std::time::Duration::from_millis(500)) => {
                 for workspace in state.list_projects() {
-                    let toml = workspace.join("agentguard.toml");
+                    let toml = workspace.join("phylax.toml");
                     let meta = match std::fs::metadata(&toml) {
                         Ok(m) => m,
                         Err(_) => continue,
@@ -34,7 +34,7 @@ pub async fn run_watcher(
                             last_modified.insert(workspace.clone(), modified);
                             if prev.is_some() {
                                 eprintln!(
-                                    "[daemon] agentguard.toml changed, hot-reloading {}",
+                                    "[daemon] phylax.toml changed, hot-reloading {}",
                                     workspace.display()
                                 );
                                 if let Err(e) = state.reload_project(&workspace) {

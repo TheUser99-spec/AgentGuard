@@ -3,7 +3,7 @@ use std::path::{Path, PathBuf};
 
 use crate::parser::{BucketSpec, ProjectManifest};
 
-/// Busca `agentguard.toml` desde `start` hacia arriba en el arbol de directorios.
+/// Busca `phylax.toml` desde `start` hacia arriba en el arbol de directorios.
 ///
 /// Devuelve la ruta al fichero si se encuentra, o `ManifestNotFound` si no.
 pub fn find_manifest(start: &Path) -> GuardResult<PathBuf> {
@@ -14,7 +14,7 @@ pub fn find_manifest(start: &Path) -> GuardResult<PathBuf> {
     };
 
     loop {
-        let candidate = current.join("agentguard.toml");
+        let candidate = current.join("phylax.toml");
         if candidate.exists() {
             return Ok(candidate);
         }
@@ -426,9 +426,9 @@ pub fn auto_detect(root: &Path) -> ProjectManifest {
 
     let mut deny = detect_secrets(root);
     deny.extend(detect_vcs_patterns(root));
-    // agentguard.toml itself must be protected from AI agents reading/modifying policy.
+    // phylax.toml itself must be protected from AI agents reading/modifying policy.
     // The daemon skips ACE application on this file to preserve hot-reload capability.
-    deny.push("agentguard.toml".to_string());
+    deny.push("phylax.toml".to_string());
     deny.sort();
     deny.dedup();
 
@@ -806,7 +806,7 @@ mod tests {
     #[test]
     fn finds_manifest_in_current_dir() {
         let dir = tempfile::tempdir().unwrap();
-        let toml = dir.path().join("agentguard.toml");
+        let toml = dir.path().join("phylax.toml");
         fs::write(&toml, "[project]\nname = \"test\"").unwrap();
 
         let found = find_manifest(dir.path()).unwrap();
@@ -819,7 +819,7 @@ mod tests {
         let sub = dir.path().join("src/deep/nested");
         fs::create_dir_all(&sub).unwrap();
 
-        let toml = dir.path().join("agentguard.toml");
+        let toml = dir.path().join("phylax.toml");
         fs::write(&toml, "").unwrap();
 
         let found = find_manifest(&sub).unwrap();

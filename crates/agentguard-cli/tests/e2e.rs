@@ -196,7 +196,7 @@ async fn e2e_register_and_unregister_project() {
     let ws = tmp.path().join("e2e-project");
     std::fs::create_dir_all(&ws).unwrap();
     std::fs::write(
-        ws.join("agentguard.toml"),
+        ws.join("phylax.toml"),
         r#"
 [project]
 name = "e2e-test"

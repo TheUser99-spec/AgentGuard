@@ -390,7 +390,7 @@ impl App {
     fn next_action(&self) -> (&'static str, &'static str, Tone) {
         if !self.connected { ("connect", "Start the daemon first", Tone::Danger) }
         else if self.pending_ask.is_some() { ("approve", "Answer the pending request", Tone::Warn) }
-        else if self.projects_count == 0 { ("setup", "Run `agentguard init` in a project", Tone::Warn) }
+        else if self.projects_count == 0 { ("setup", "Run `phylax init` in a project", Tone::Warn) }
         else if self.blocks_today > 0 { ("review", "Check blocked files", Tone::Warn) }
         else { ("ready", "Everything looks good", Tone::Good) }
     }
@@ -610,7 +610,7 @@ impl App {
         let posture = self.posture();
         let (headline, desc, tone) = match posture {
             ProtectionPosture::Protected => ("Safe to code", "AgentGuard is watching this workspace.", Tone::Good),
-            ProtectionPosture::NeedsSetup => ("Add a project", "Run `agentguard init` to protect a workspace.", Tone::Warn),
+            ProtectionPosture::NeedsSetup => ("Add a project", "Run `phylax init` to protect a workspace.", Tone::Warn),
             ProtectionPosture::NeedsDecision => ("Approval needed", "An agent is waiting for your answer.", Tone::Warn),
             ProtectionPosture::Offline => ("Not connected", "Start the AgentGuard daemon first.", Tone::Danger),
         };

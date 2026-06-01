@@ -91,15 +91,15 @@ impl Store {
                 .or_else(|_| std::env::var("USERPROFILE"))
                 .unwrap_or_else(|_| ".".to_string());
             PathBuf::from(appdata)
-                .join("AgentGuard")
-                .join("agentguard.db")
+                .join("phylax")
+                .join("phylax.db")
         }
         #[cfg(not(target_os = "windows"))]
         {
             dirs::data_local_dir()
                 .unwrap_or_else(|| PathBuf::from("."))
-                .join("agentguard")
-                .join("agentguard.db")
+                .join("phylax")
+                .join("phylax.db")
         }
     }
 }

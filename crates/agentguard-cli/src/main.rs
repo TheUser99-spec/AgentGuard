@@ -7,7 +7,7 @@ mod cmd;
 
 #[derive(Parser)]
 #[command(
-    name = "agentguard",
+    name = "phylax",
     about = "OS-level file safety for AI coding agents",
     version = env!("CARGO_PKG_VERSION"),
 )]
@@ -18,7 +18,7 @@ pub struct Cli {
 
 #[derive(Subcommand)]
 pub enum Commands {
-    /// Initialize AgentGuard: creates agentguard.toml, starts daemon, registers project
+    /// Initialize Phylax: creates phylax.toml, starts daemon, registers project
     Init {
         #[arg(long)]
         no_create: bool,
@@ -28,7 +28,7 @@ pub enum Commands {
     },
     /// Show daemon status and watched projects
     Status,
-    /// Stop the daemon (shortcut for `agentguard daemon stop`)
+    /// Stop the daemon (shortcut for `phylax daemon stop`)
     Stop,
     /// Project commands
     Project {
@@ -69,7 +69,7 @@ pub enum Commands {
 
 #[derive(Subcommand)]
 pub enum ProjectCommands {
-    /// Validate the agentguard.toml in the current directory
+    /// Validate the phylax.toml in the current directory
     Validate {
         #[arg(long, short, default_value = ".")]
         path: PathBuf,
@@ -98,7 +98,7 @@ pub enum ProjectCommands {
         #[arg(long, short, default_value = ".")]
         path: PathBuf,
     },
-    /// Reload agentguard.toml from disk (manual hot-reload)
+    /// Reload phylax.toml from disk (manual hot-reload)
     Reload {
         #[arg(long, short, default_value = ".")]
         path: PathBuf,
@@ -149,7 +149,7 @@ pub enum AuditCommands {
         #[arg(long, short, default_value = "csv")]
         format: String,
         /// Output file path
-        #[arg(long, short, default_value = "agentguard-audit.csv")]
+        #[arg(long, short, default_value = "phylax-audit.csv")]
         output: PathBuf,
         /// Max number of events to export (default: all)
         #[arg(long, short)]

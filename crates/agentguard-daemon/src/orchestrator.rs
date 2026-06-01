@@ -70,7 +70,7 @@ impl DaemonState {
     pub fn reload_project(&self, ws: &Path) -> GuardResult<()> {
         let w = normalize(ws.to_path_buf());
         let old = { let p = recover_lock!(self.projects.read(), "projects"); p.get(&w).cloned().ok_or_else(|| agentguard_core::GuardError::IpcError("project not found".into()))? };
-        let tp = w.join("agentguard.toml");
+        let tp = w.join("phylax.toml");
         let (nh, c) = with_toml(&old.enforcer, &tp, true, || { let tp = find_manifest(&w)?; let nh = hash_file(&tp)?; let mut mr = ProjectManifest::from_file(&tp)?; enforce_mandatory_denies(&mut mr); Ok((nh, CompiledManifest::compile(&mr, w.clone())?)) })?;
         if old.toml_hash == nh { return Ok(()); }
         let mut e = agentguard_enforce::Enforcer::new(w.clone());
