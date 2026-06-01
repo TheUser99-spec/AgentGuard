@@ -339,7 +339,7 @@
 }
 
 /* ================================================================
-   HOW IT WORKS — 3 simple steps
+   HOW IT WORKS  3 simple steps
    ================================================================ */
 .flow-simple {
   display: flex;
@@ -601,7 +601,7 @@
 }
 
 /* ================================================================
-   INSTALL — PowerShell terminal
+   INSTALL  PowerShell terminal
    ================================================================ */
 .terminal-block {
   border: 1px solid var(--ink);
