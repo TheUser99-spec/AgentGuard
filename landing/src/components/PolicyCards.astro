@@ -7,11 +7,11 @@ const profiles = [
     summary: 'Protects secrets and critical files. Source edits are fast. Lockfile changes ask for confirmation.',
     capabilities: 'Blocks .env, .pem, .key. Allows src/** and tests/**. Prompts for migrations and lockfiles.',
     code: `[project]
-name = "my-agentguard-project"
+name = "my-phylax-project"
 default = "conservative"
 
 [deny]
-files = [".env", ".env.*", "secrets/**", "*.pem", "*.key", "agentguard.toml"]
+files = [".env", ".env.*", "secrets/**", "*.pem", "*.key", "phylax.toml"]
 
 [ask]
 files = ["Cargo.lock", "package-lock.json", "migrations/**"]
@@ -33,7 +33,7 @@ name = "agentguard-strict"
 default = "conservative"
 
 [deny]
-files = [".env", ".env.*", "secrets/**", "keys/**", "*.pem", "*.key", "*.p12", "agentguard.toml"]
+files = [".env", ".env.*", "secrets/**", "keys/**", "*.pem", "*.key", "*.p12", "phylax.toml"]
 
 [ask]
 files = ["src/**", "tests/**", "Cargo.lock", "package-lock.json", "migrations/**"]
@@ -46,13 +46,13 @@ files = ["README.md", "docs/**", "src/**", "tests/**"]`,
     label: 'Fast & Flexible',
     tag: 'Low friction',
     summary: 'Lets agents edit freely. Only secrets and the manifest are protected.',
-    capabilities: 'Blocks .env, .pem, .key, agentguard.toml. Everything else is writable. No prompts for normal edits.',
+    capabilities: 'Blocks .env, .pem, .key, phylax.toml. Everything else is writable. No prompts for normal edits.',
     code: `[project]
 name = "agentguard-fast"
 default = "conservative"
 
 [deny]
-files = [".env", ".env.*", "secrets/**", "*.pem", "*.key", "agentguard.toml"]
+files = [".env", ".env.*", "secrets/**", "*.pem", "*.key", "phylax.toml"]
 
 [write]
 files = ["src/**", "tests/**", "docs/**", "examples/**", "Cargo.lock", "package-lock.json"]
@@ -80,7 +80,7 @@ const buckets = [
         <p class="section-kicker">Policies</p>
         <h2 class="section-title">Choose your protection level.</h2>
         <p class="section-copy">
-          Phylax uses six permission buckets ordered by priority. <strong>Deny always wins.</strong> Start with a preset, then customize via <code>agentguard.toml</code>.
+          Phylax uses six permission buckets ordered by priority. <strong>Deny always wins.</strong> Start with a preset, then customize via <code>phylax.toml</code>.
         </p>
       </div>
     </div>

@@ -2,7 +2,7 @@
 import Base from '../layouts/Base.astro';
 
 const title = 'Phylax Docs - Commands, Daemon & Architecture';
-const description = 'Complete reference for Phylax: commands, daemon lifecycle, permission model, agentguard.toml configuration, and architecture.';
+const description = 'Complete reference for Phylax: commands, daemon lifecycle, permission model, phylax.toml configuration, and architecture.';
 const docsStructuredData = JSON.stringify({
   '@context': 'https://schema.org',
   '@type': 'TechArticle',
@@ -49,7 +49,7 @@ const docsStructuredData = JSON.stringify({
           <a href="#daemon-lifecycle">Daemon Lifecycle</a>
           <a href="#all-commands">All Commands</a>
           <a href="#permission-model">Permission Model</a>
-          <a href="#agentguard-toml">agentguard.toml</a>
+          <a href="#agentguard-toml">phylax.toml</a>
           <a href="#anti-bypass">Anti-Bypass</a>
           <a href="#phase-1-vs-phase-2">Phase 1 vs Phase 2</a>
         </nav>
@@ -77,8 +77,8 @@ const docsStructuredData = JSON.stringify({
           <div class="code-block-bar">
             <span class="code-block-lang">Terminal</span>
           </div>
-          <pre><code>agentguard init       <span class="code-comment"># Creates agentguard.toml, starts daemon, registers your project</span>
-agentguard run        <span class="code-comment"># Opens the live terminal dashboard (60fps)</span></code></pre>
+          <pre><code>phylax init       <span class="code-comment"># Creates phylax.toml, starts daemon, registers your project</span>
+phylax run        <span class="code-comment"># Opens the live terminal dashboard (60fps)</span></code></pre>
         </div>
 
         <p class="docs-p">That's it. Phylax is now running. Any AI agent that tries to touch a denied file gets <code>ACCESS_DENIED</code> from the Windows kernel.</p>
@@ -94,24 +94,24 @@ agentguard run        <span class="code-comment"># Opens the live terminal dashb
         <table class="docs-table">
           <thead><tr><th>Command</th><th>What it does</th></tr></thead>
           <tbody>
-            <tr><td><code>agentguard daemon start</code></td><td>Start daemon invisibly in the background</td></tr>
-            <tr><td><code>agentguard stop</code></td><td>Stop daemon - releases all Windows file locks</td></tr>
-            <tr><td><code>agentguard run</code></td><td>Daemon + TUI dashboard together</td></tr>
-            <tr><td><code>agentguard ui</code></td><td>TUI only (daemon must already be running)</td></tr>
-            <tr><td><code>agentguard status</code></td><td>Live view: projects, agents, events, blocks</td></tr>
-            <tr><td><code>agentguard update</code></td><td>Auto-update from GitHub</td></tr>
+            <tr><td><code>phylax daemon start</code></td><td>Start daemon invisibly in the background</td></tr>
+            <tr><td><code>phylax stop</code></td><td>Stop daemon - releases all Windows file locks</td></tr>
+            <tr><td><code>phylax run</code></td><td>Daemon + TUI dashboard together</td></tr>
+            <tr><td><code>phylax ui</code></td><td>TUI only (daemon must already be running)</td></tr>
+            <tr><td><code>phylax status</code></td><td>Live view: projects, agents, events, blocks</td></tr>
+            <tr><td><code>phylax update</code></td><td>Auto-update from GitHub</td></tr>
           </tbody>
         </table>
 
         <div class="docs-note docs-note--warn">
           <strong>Understanding file locks</strong>
-          <p>While the daemon runs, files matching <code>[deny]</code> rules are locked by Windows ACLs. <strong>You cannot edit them either.</strong> To modify <code>.env</code>, <code>agentguard.toml</code>, or any denied file:</p>
+          <p>While the daemon runs, files matching <code>[deny]</code> rules are locked by Windows ACLs. <strong>You cannot edit them either.</strong> To modify <code>.env</code>, <code>phylax.toml</code>, or any denied file:</p>
           <div class="code-block" style="margin:10px 0">
-            <pre><code>agentguard stop
+            <pre><code>phylax stop
 # edit your files safely...
-agentguard daemon start</code></pre>
+phylax daemon start</code></pre>
           </div>
-          <p>You can also press <code>Q</code> in the TUI dashboard to stop the daemon, or use <code>agentguard project off</code> to temporarily disable protection without stopping the daemon.</p>
+          <p>You can also press <code>Q</code> in the TUI dashboard to stop the daemon, or use <code>phylax project off</code> to temporarily disable protection without stopping the daemon.</p>
         </div>
       </div>
     </section>
@@ -120,18 +120,18 @@ agentguard daemon start</code></pre>
     <section class="section" id="all-commands">
       <div class="site-shell docs-content">
         <h2 class="docs-h2">All Commands</h2>
-        <p class="docs-p">Every command available. Use <code>agentguard --help</code> for the full CLI reference.</p>
+        <p class="docs-p">Every command available. Use <code>phylax --help</code> for the full CLI reference.</p>
 
         <h3 class="docs-h3">Project</h3>
         <table class="docs-table">
           <thead><tr><th>Command</th><th>Description</th></tr></thead>
           <tbody>
-            <tr><td><code>agentguard init</code></td><td>Create agentguard.toml, start daemon, register project</td></tr>
-            <tr><td><code>agentguard project validate</code></td><td>Validate agentguard.toml syntax and rules</td></tr>
-            <tr><td><code>agentguard project check -f &lt;file&gt; -o &lt;op&gt;</code></td><td>Dry-run: what would happen if an agent tried <code>&lt;op&gt;</code> on <code>&lt;file&gt;</code></td></tr>
-            <tr><td><code>agentguard project verify</code></td><td>Audit: counts effective deny coverage vs expected</td></tr>
-            <tr><td><code>agentguard project on</code></td><td>Turn protection ON for current project</td></tr>
-            <tr><td><code>agentguard project off</code></td><td>Turn protection OFF (files become accessible)</td></tr>
+            <tr><td><code>phylax init</code></td><td>Create phylax.toml, start daemon, register project</td></tr>
+            <tr><td><code>phylax project validate</code></td><td>Validate phylax.toml syntax and rules</td></tr>
+            <tr><td><code>phylax project check -f &lt;file&gt; -o &lt;op&gt;</code></td><td>Dry-run: what would happen if an agent tried <code>&lt;op&gt;</code> on <code>&lt;file&gt;</code></td></tr>
+            <tr><td><code>phylax project verify</code></td><td>Audit: counts effective deny coverage vs expected</td></tr>
+            <tr><td><code>phylax project on</code></td><td>Turn protection ON for current project</td></tr>
+            <tr><td><code>phylax project off</code></td><td>Turn protection OFF (files become accessible)</td></tr>
           </tbody>
         </table>
 
@@ -139,10 +139,10 @@ agentguard daemon start</code></pre>
         <table class="docs-table">
           <thead><tr><th>Command</th><th>Description</th></tr></thead>
           <tbody>
-            <tr><td><code>agentguard global add deny "*.env"</code></td><td>Add a global deny rule (applies to all projects)</td></tr>
-            <tr><td><code>agentguard global add ask "Cargo.lock"</code></td><td>Add a global ask rule</td></tr>
-            <tr><td><code>agentguard global list</code></td><td>List all active global rules</td></tr>
-            <tr><td><code>agentguard global remove &lt;id&gt;</code></td><td>Remove a global rule by ID</td></tr>
+            <tr><td><code>phylax global add deny "*.env"</code></td><td>Add a global deny rule (applies to all projects)</td></tr>
+            <tr><td><code>phylax global add ask "Cargo.lock"</code></td><td>Add a global ask rule</td></tr>
+            <tr><td><code>phylax global list</code></td><td>List all active global rules</td></tr>
+            <tr><td><code>phylax global remove &lt;id&gt;</code></td><td>Remove a global rule by ID</td></tr>
           </tbody>
         </table>
 
@@ -150,9 +150,9 @@ agentguard daemon start</code></pre>
         <table class="docs-table">
           <thead><tr><th>Command</th><th>Description</th></tr></thead>
           <tbody>
-            <tr><td><code>agentguard status</code></td><td>Live overview: running projects, active agents, blocked events, rules loaded</td></tr>
-            <tr><td><code>agentguard audit list</code></td><td>View recent audit history (blocked/allowed events)</td></tr>
-            <tr><td><code>agentguard audit tail</code></td><td>Follow audit events in real time (like tail -f)</td></tr>
+            <tr><td><code>phylax status</code></td><td>Live overview: running projects, active agents, blocked events, rules loaded</td></tr>
+            <tr><td><code>phylax audit list</code></td><td>View recent audit history (blocked/allowed events)</td></tr>
+            <tr><td><code>phylax audit tail</code></td><td>Follow audit events in real time (like tail -f)</td></tr>
           </tbody>
         </table>
       </div>
@@ -199,21 +199,21 @@ agentguard daemon start</code></pre>
       </div>
     </section>
 
-    <!-- agentguard.toml -->
+    <!-- phylax.toml -->
     <section class="section" id="agentguard-toml">
       <div class="site-shell docs-content">
-        <h2 class="docs-h2">agentguard.toml</h2>
+        <h2 class="docs-h2">phylax.toml</h2>
         <p class="docs-p">The configuration file lives at the root of your project. It defines what each bucket protects using glob patterns.</p>
 
         <div class="code-block">
           <div class="code-block-bar">
-            <span class="code-block-lang">agentguard.toml</span>
+            <span class="code-block-lang">phylax.toml</span>
             <button class="code-block-copy" type="button" data-copy="[project]
 name = &quot;my-project&quot;
 default = &quot;conservative&quot;
 
 [deny]
-files = [&quot;.env&quot;, &quot;.env.*&quot;, &quot;secrets/**&quot;, &quot;*.pem&quot;, &quot;*.key&quot;, &quot;agentguard.toml&quot;]
+files = [&quot;.env&quot;, &quot;.env.*&quot;, &quot;secrets/**&quot;, &quot;*.pem&quot;, &quot;*.key&quot;, &quot;phylax.toml&quot;]
 
 [ask]
 files = [&quot;Cargo.lock&quot;, &quot;package-lock.json&quot;, &quot;migrations/**&quot;]
@@ -229,7 +229,7 @@ files = [&quot;README.md&quot;, &quot;docs/**&quot;]">Copy</button>
 <span class="code-prop">default</span> = <span class="code-string">"conservative"</span>
 
 <span class="code-keyword">[deny]</span>
-<span class="code-prop">files</span> = [<span class="code-string">".env"</span>, <span class="code-string">".env.*"</span>, <span class="code-string">"secrets/**"</span>, <span class="code-string">"*.pem"</span>, <span class="code-string">"*.key"</span>, <span class="code-string">"agentguard.toml"</span>]
+<span class="code-prop">files</span> = [<span class="code-string">".env"</span>, <span class="code-string">".env.*"</span>, <span class="code-string">"secrets/**"</span>, <span class="code-string">"*.pem"</span>, <span class="code-string">"*.key"</span>, <span class="code-string">"phylax.toml"</span>]
 
 <span class="code-keyword">[ask]</span>
 <span class="code-prop">files</span> = [<span class="code-string">"Cargo.lock"</span>, <span class="code-string">"package-lock.json"</span>, <span class="code-string">"migrations/**"</span>]
@@ -245,7 +245,7 @@ files = [&quot;README.md&quot;, &quot;docs/**&quot;]">Copy</button>
           <strong>Mandatory deny patterns</strong>
           <p>The daemon <strong>always</strong> denies these paths, even if they're missing from your config:</p>
           <p style="font-family:var(--mono);font-size:13px;line-height:1.8;margin-top:10px">
-            agentguard.toml &middot; .env &middot; .env.* &middot; .git/** &middot; **/*.key &middot; **/*.pem &middot; **/*.p12 &middot; **/*.pfx
+            phylax.toml &middot; .env &middot; .env.* &middot; .git/** &middot; **/*.key &middot; **/*.pem &middot; **/*.p12 &middot; **/*.pfx
           </p>
         </div>
       </div>
@@ -292,12 +292,12 @@ files = [&quot;README.md&quot;, &quot;docs/**&quot;]">Copy</button>
 
         <div class="docs-note docs-note--warn">
           <strong>Phase 1 (Current)</strong>
-          <p>Protection is active while the daemon runs. <code>agentguard stop</code> removes DENY ACEs and files become accessible. ACEs apply to Everyone (including you). There is a ~750ms polling window between agent detection and ACE application. Audit logs in SQLite are user-writable.</p>
+          <p>Protection is active while the daemon runs. <code>phylax stop</code> removes DENY ACEs and files become accessible. ACEs apply to Everyone (including you). There is a ~750ms polling window between agent detection and ACE application. Audit logs in SQLite are user-writable.</p>
         </div>
 
         <div class="docs-note docs-note--info">
           <strong>Phase 2 (In Development - driver/)</strong>
-          <p>A C++ kernel minifilter driver pauses I/O IRPs inline at the kernel level. Protection survives daemon restart. Per-agent overrides and ask flow enforce in real time. Audit logs are tamper-proof at kernel level. <code>agentguard stop</code> no longer removes protection - the driver persists independently.</p>
+          <p>A C++ kernel minifilter driver pauses I/O IRPs inline at the kernel level. Protection survives daemon restart. Per-agent overrides and ask flow enforce in real time. Audit logs are tamper-proof at kernel level. <code>phylax stop</code> no longer removes protection - the driver persists independently.</p>
         </div>
 
         <table class="docs-table" style="margin-top:28px">
@@ -313,7 +313,7 @@ files = [&quot;README.md&quot;, &quot;docs/**&quot;]">Copy</button>
           </tbody>
         </table>
 
-        <p class="docs-p" style="margin-top:24px">The kernel driver lives in <code>driver/agentguard.sys</code>. It communicates with the Rust daemon via IOCTLs on a device interface. It is optional - Phase 1 works entirely in user mode.</p>
+        <p class="docs-p" style="margin-top:24px">The kernel driver lives in <code>driver/phylax.sys</code>. It communicates with the Rust daemon via IOCTLs on a device interface. It is optional - Phase 1 works entirely in user mode.</p>
       </div>
     </section>
 

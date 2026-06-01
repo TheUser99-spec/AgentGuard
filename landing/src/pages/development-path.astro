@@ -111,7 +111,7 @@ const devPathStructuredData = JSON.stringify({
       </div>
     </section>
 
-    <!-- PART 3: THE BIRTH OF AGENTGUARD -->
+    <!-- PART 3: THE BIRTH OF phylax -->
     <section class="section">
       <div class="site-shell docs-content">
         <h2 class="docs-h2">Part 3 - The Birth of Phylax</h2>
@@ -147,7 +147,7 @@ const devPathStructuredData = JSON.stringify({
         <table class="docs-table">
           <thead><tr><th>Feature</th><th>Status</th></tr></thead>
           <tbody>
-            <tr><td>agentguard.toml parser &amp; glob engine</td><td><span class="tag tag-green">Done</span></td></tr>
+            <tr><td>phylax.toml parser &amp; glob engine</td><td><span class="tag tag-green">Done</span></td></tr>
             <tr><td>Multi-agent detection (5 signals)</td><td><span class="tag tag-green">Done</span></td></tr>
             <tr><td>DENY ACEs + MIC labels (3-layer anti-bypass)</td><td><span class="tag tag-green">Done</span></td></tr>
             <tr><td>SQLite audit log</td><td><span class="tag tag-green">Done</span></td></tr>
@@ -161,7 +161,7 @@ const devPathStructuredData = JSON.stringify({
 
         <div class="docs-note docs-note--warn" style="margin-top:20px">
           <strong>Phase 1 limitations</strong>
-          <p>Protection is active while the daemon runs. <code>agentguard stop</code> removes DENY ACEs and files become accessible. ACEs apply to Everyone (including you). You must stop the daemon to edit protected files yourself.</p>
+          <p>Protection is active while the daemon runs. <code>phylax stop</code> removes DENY ACEs and files become accessible. ACEs apply to Everyone (including you). You must stop the daemon to edit protected files yourself.</p>
         </div>
       </div>
     </section>
@@ -171,7 +171,7 @@ const devPathStructuredData = JSON.stringify({
       <div class="site-shell docs-content">
         <div class="phase-badge phase-next">In Development</div>
         <h2 class="docs-h2" style="border-top:0;padding-top:0;margin-top:8px">Phase 2 - Kernel Minifilter</h2>
-        <p class="docs-p">A C++ Windows kernel driver (<code>driver/agentguard.sys</code>) that intercepts I/O operations at ring 0. The driver <strong>pauses IRPs inline</strong> and evaluates them before the agent ever touches a byte. This is the real deal.</p>
+        <p class="docs-p">A C++ Windows kernel driver (<code>driver/phylax.sys</code>) that intercepts I/O operations at ring 0. The driver <strong>pauses IRPs inline</strong> and evaluates them before the agent ever touches a byte. This is the real deal.</p>
 
         <table class="docs-table">
           <thead><tr><th>Feature</th><th>What it means</th></tr></thead>
@@ -186,7 +186,7 @@ const devPathStructuredData = JSON.stringify({
             </tr>
             <tr>
               <td><strong>Protection survives daemon restart</strong></td>
-              <td>The driver persists independently. <code>agentguard stop</code> no longer removes protection. Kill the daemon, kill the process - the driver still enforces.</td>
+              <td>The driver persists independently. <code>phylax stop</code> no longer removes protection. Kill the daemon, kill the process - the driver still enforces.</td>
             </tr>
             <tr>
               <td><strong>Ask flow enforced</strong></td>
@@ -227,7 +227,7 @@ const devPathStructuredData = JSON.stringify({
           </div>
         </div>
 
-        <p class="docs-p" style="margin-top:20px">Same agentguard.toml. Same permission model. Same audit trail. Different kernel.</p>
+        <p class="docs-p" style="margin-top:20px">Same phylax.toml. Same permission model. Same audit trail. Different kernel.</p>
       </div>
     </section>
 
@@ -252,7 +252,7 @@ const devPathStructuredData = JSON.stringify({
           <div class="nightfall-card">
             <span class="nightfall-num">03</span>
             <strong>Distributed Trust</strong>
-            <p>Protection policies that can be verified, signed, and shared. A team of developers can agree on a security baseline and cryptographically guarantee it hasn't been tampered with. Your agentguard.toml becomes a verifiable security contract.</p>
+            <p>Protection policies that can be verified, signed, and shared. A team of developers can agree on a security baseline and cryptographically guarantee it hasn't been tampered with. Your phylax.toml becomes a verifiable security contract.</p>
           </div>
           <div class="nightfall-card nightfall-redacted">
             <span class="nightfall-num">04</span>

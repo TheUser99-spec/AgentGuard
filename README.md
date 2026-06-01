@@ -33,7 +33,7 @@ Phylax draws a boundary. The agent can edit your source code. It can never touch
 <p align="center">
   <i>🎬 Demo GIF coming soon</i>
   <br>
-  <sub><code>agentguard run</code> and watch the dashboard light up.</sub>
+  <sub><code>phylax run</code> and watch the dashboard light up.</sub>
 </p>
 
 ---
@@ -49,8 +49,8 @@ irm https://raw.githubusercontent.com/TheUser99-spec/AgentGuard/main/install.ps1
 ## Basic usage
 
 ```powershell
-agentguard init       # Creates agentguard.toml, starts daemon, registers your project
-agentguard run        # Opens the live dashboard
+phylax init       # Creates phylax.toml, starts daemon, registers your project
+phylax run        # Opens the live dashboard
 ```
 
 That's it. Your project is protected.
@@ -65,19 +65,19 @@ The daemon runs invisible in the background — no console window, survives term
 
 | Command | What it does |
 |---|---|
-| `agentguard daemon start` | Start daemon (invisible) |
-| `agentguard stop` | Stop daemon and release file locks |
-| `agentguard run` | Daemon + dashboard together |
-| `agentguard ui` | Dashboard only |
-| `agentguard status` | Live status: projects, agents, events, blocks |
-| `agentguard update` | Auto-update from GitHub |
+| `phylax daemon start` | Start daemon (invisible) |
+| `phylax stop` | Stop daemon and release file locks |
+| `phylax run` | Daemon + dashboard together |
+| `phylax ui` | Dashboard only |
+| `phylax status` | Live status: projects, agents, events, blocks |
+| `phylax update` | Auto-update from GitHub |
 
 While the daemon runs, denied files are locked by Windows ACLs. To edit protected files:
 
 ```powershell
-agentguard stop
+phylax stop
 # edit your files...
-agentguard daemon start
+phylax daemon start
 ```
 
 Press `Q` in the dashboard to stop the daemon.
@@ -97,7 +97,7 @@ Six buckets ordered by priority. **Deny always wins.**
 
 When no rule matches: read allowed, write asks, delete denied.
 
-### agentguard.toml
+### phylax.toml
 
 ```toml
 [project]
@@ -121,16 +121,16 @@ files = ["README.md", "docs/**"]
 
 | Command | What it does |
 |---|---|
-| `agentguard init` | Create agentguard.toml, start daemon, register project |
-| `agentguard run` | Start daemon + open dashboard |
-| `agentguard stop` | Stop daemon (releases file locks) |
-| `agentguard status` | Live status: projects, agents, events, blocks |
-| `agentguard project validate` | Validate agentguard.toml |
-| `agentguard project check -f <f> -o <op>` | Dry-run file access check |
-| `agentguard project verify` | Audit protection coverage |
-| `agentguard global add deny "*.env"` | Add global deny rule |
-| `agentguard audit list` | View audit history |
-| `agentguard update` | Auto-update from GitHub |
+| `phylax init` | Create phylax.toml, start daemon, register project |
+| `phylax run` | Start daemon + open dashboard |
+| `phylax stop` | Stop daemon (releases file locks) |
+| `phylax status` | Live status: projects, agents, events, blocks |
+| `phylax project validate` | Validate phylax.toml |
+| `phylax project check -f <f> -o <op>` | Dry-run file access check |
+| `phylax project verify` | Audit protection coverage |
+| `phylax global add deny "*.env"` | Add global deny rule |
+| `phylax audit list` | View audit history |
+| `phylax update` | Auto-update from GitHub |
 
 ### Anti-bypass
 
@@ -148,7 +148,7 @@ No account, no cloud, no telemetry.
 
 - No login required
 - Works fully offline
-- Audit logs in local SQLite (`%APPDATA%\Phylax\agentguard.db`)
+- Audit logs in local SQLite (`%APPDATA%\Phylax\phylax.db`)
 - No API keys, no registration, no phone number
 
 Your files, your rules, your machine.
@@ -168,7 +168,7 @@ cargo build --workspace --release
 | [Quickstart](docs/quickstart.md) | Complete guide |
 | [Architecture](docs/01-architecture.md) | System design |
 | [Core types](docs/02-core-types.md) | Permission model |
-| [Manifest & policy](docs/03-manifest-policy.md) | agentguard.toml |
+| [Manifest & policy](docs/03-manifest-policy.md) | phylax.toml |
 | [Storage & audit](docs/04-storage-audit.md) | SQLite schema |
 | [Detection](docs/05-detection-enforcement.md) | Process classification |
 | [IPC & daemon/CLI](docs/06-ipc-daemon-cli.md) | Protocol + lifecycle |
@@ -179,7 +179,7 @@ cargo build --workspace --release
 ## Roadmap
 
 - [x] Process detection & AI agent classification
-- [x] agentguard.toml parser with glob-based policy engine
+- [x] phylax.toml parser with glob-based policy engine
 - [x] Windows ACL/ACE enforcement
 - [x] Three-layer anti-bypass (DENY ACEs + MIC labels)
 - [x] SQLite audit log
