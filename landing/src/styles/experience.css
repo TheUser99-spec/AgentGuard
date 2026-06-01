@@ -114,11 +114,16 @@
 
 .hero-superpowers {
   margin-top: 6px;
+  margin-bottom: 8px;
   font-family: var(--mono);
   font-size: 13px;
   font-weight: 600;
   color: var(--green-dark);
   letter-spacing: 0.02em;
+}
+
+.hero-copy .btn-row {
+  margin-top: 24px;
 }
 
 .hero-terminal {
