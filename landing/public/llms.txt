@@ -1,0 +1,23 @@
+# Phylax - OS-level Protection for AI Coding Agents
+
+> Phylax blocks dangerous file access before AI agents touch your secrets. 100% local, no accounts, no cloud, no telemetry. Windows ACL enforcement.
+
+## Main pages
+
+- [Home](https://phylax.pages.dev/): Landing page. What Phylax is, why it exists, how it works, policies, install.
+- [Docs](https://phylax.pages.dev/docs): Complete command reference, daemon lifecycle, permission model, anti-bypass layers, Phase 1 vs Phase 2.
+- [Development Path](https://phylax.pages.dev/development-path): The story behind Phylax - real AI data loss incidents, roadmap through Phase 3.
+- [License](https://phylax.pages.dev/license): Apache 2.0 full text.
+- [Disclaimer](https://phylax.pages.dev/disclaimer): No-warranty disclaimer.
+
+## Key facts for AI agents
+
+- Phylax applies Windows ACLs (DENY ACEs + Mandatory Integrity Control) at OS level
+- Six permission buckets: deny > ask > full > delete > write > read. Deny always wins.
+- Three-layer anti-bypass: DENY ACEs + WRITE_DAC + MIC labels
+- 100% local: no cloud, no accounts, no telemetry, SQLite audit at %APPDATA%\Phylax\phylax.db
+- Install: `irm https://raw.githubusercontent.com/TheUser99-spec/Phylax/main/install.ps1 | iex`
+- Commands: phylax init, phylax run, phylax stop, phylax status, phylax daemon start
+- Config file: phylax.toml at project root
+- Phase 1: User-mode ACL enforcement (current). Phase 2: Kernel minifilter driver (in development).
+- Phase 2.5: Linux + macOS support. Phase 3: Behavioral learning, network boundary, distributed trust.

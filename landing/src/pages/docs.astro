@@ -5,19 +5,30 @@ const title = 'Phylax Docs - Commands, Daemon & Architecture';
 const description = 'Complete reference for Phylax: commands, daemon lifecycle, permission model, phylax.toml configuration, and architecture.';
 const docsStructuredData = JSON.stringify({
   '@context': 'https://schema.org',
-  '@type': 'TechArticle',
-  headline: title,
-  description: description,
-  author: { '@type': 'Person', name: 'Phylax Contributors' },
-  datePublished: '2025-01-01',
-  dateModified: '2025-06-01',
-  proficiencyLevel: 'Beginner',
-  about: {
-    '@type': 'SoftwareApplication',
-    name: 'Phylax',
-    applicationCategory: 'SecurityApplication',
-    operatingSystem: 'Windows'
-  }
+  '@graph': [
+    {
+      '@type': 'TechArticle',
+      headline: title,
+      description: description,
+      author: { '@type': 'Person', name: 'Phylax Contributors' },
+      datePublished: '2025-01-01',
+      dateModified: '2025-06-01',
+      proficiencyLevel: 'Beginner',
+      about: {
+        '@type': 'SoftwareApplication',
+        name: 'Phylax',
+        applicationCategory: 'SecurityApplication',
+        operatingSystem: 'Windows'
+      }
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://phylax.pages.dev/' },
+        { '@type': 'ListItem', position: 2, name: 'Docs', item: 'https://phylax.pages.dev/docs' }
+      ]
+    }
+  ]
 });
 ---
 

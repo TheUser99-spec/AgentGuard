@@ -28,9 +28,19 @@ const homeStructuredData = JSON.stringify({
       '@type': 'SoftwareApplication',
       name: 'Phylax',
       applicationCategory: 'SecurityApplication',
+      applicationSubCategory: 'File Protection',
       operatingSystem: 'Windows',
       description: description,
       url: 'https://phylax.pages.dev',
+      screenshot: 'https://phylax.pages.dev/logo.jpg',
+      featureList: [
+        'Windows ACL enforcement with DENY ACEs and Mandatory Integrity Control',
+        'Multi-agent detection (Claude, Cursor, OpenCode, Copilot, Windsurf, Aider)',
+        'Three-layer anti-bypass protection',
+        'SQLite audit logging with 100% local storage',
+        'Real-time terminal dashboard at 60fps',
+        'Priority-ordered permission buckets (deny > ask > full > delete > write > read)'
+      ],
       offers: {
         '@type': 'Offer',
         price: '0',
@@ -40,6 +50,51 @@ const homeStructuredData = JSON.stringify({
         '@type': 'Person',
         name: 'Phylax Contributors'
       }
+    },
+    {
+      '@type': 'FAQPage',
+      mainEntity: [
+        {
+          '@type': 'Question',
+          name: 'What is Phylax?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'Phylax is a Windows OS-level security layer that blocks AI coding agents from reading, writing, or deleting sensitive files. It applies real Windows ACLs enforced by the kernel.'
+          }
+        },
+        {
+          '@type': 'Question',
+          name: 'Does Phylax require a cloud account?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'No. Phylax is 100% local. No accounts, no cloud, no telemetry. All audit logs stay on your machine in SQLite.'
+          }
+        },
+        {
+          '@type': 'Question',
+          name: 'What AI agents does Phylax support?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'Phylax detects Claude Code, Cursor, OpenCode, GitHub Copilot CLI, Windsurf, Aider, Goose, Cline, and Gemini CLI automatically via process name, environment variables, and command-line inspection.'
+          }
+        },
+        {
+          '@type': 'Question',
+          name: 'How does Phylax enforcement work?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'Phylax applies three layers of Windows security: DENY ACEs block file access, WRITE_DAC prevents ACL modification, and Mandatory Integrity Control labels stop privilege bypass.'
+          }
+        },
+        {
+          '@type': 'Question',
+          name: 'Is Phylax free?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'Yes, Phylax is free and open-source under the Apache 2.0 license.'
+          }
+        }
+      ]
     }
   ]
 });

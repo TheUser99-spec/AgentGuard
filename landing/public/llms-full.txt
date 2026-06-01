@@ -1,0 +1,128 @@
+# Phylax - Complete Documentation
+
+## What is Phylax
+
+Phylax is a Windows security layer that sits between your filesystem and any AI coding agent. It applies real Windows ACLs so the OS kernel itself returns ACCESS_DENIED before the agent ever touches a protected file. It works with Claude Code, Cursor, OpenCode, Copilot, Windsurf, Aider, and others.
+
+## Why it exists
+
+AI agents have unrestricted filesystem access. They can read your secrets, delete your migrations, or wipe your config files - without asking, without warning. Phylax draws a boundary: the agent can edit your source code, but it can never touch your .env, your SSH keys, or your policy files.
+
+## Install
+
+```powershell
+irm https://raw.githubusercontent.com/TheUser99-spec/Phylax/main/install.ps1 | iex
+```
+
+## Basic usage
+
+```powershell
+phylax init       # Creates phylax.toml, starts daemon, registers your project
+phylax run        # Opens the live dashboard
+```
+
+## Daemon lifecycle
+
+The daemon runs invisible in the background - no console window, survives terminal close.
+
+| Command | What it does |
+|---|---|
+| phylax daemon start | Start daemon (invisible) |
+| phylax stop | Stop daemon and release file locks |
+| phylax run | Daemon + dashboard together |
+| phylax ui | Dashboard only |
+| phylax status | Live status: projects, agents, events, blocks |
+| phylax update | Auto-update from GitHub |
+
+While the daemon runs, denied files are locked by Windows ACLs. To edit protected files:
+```powershell
+phylax stop
+# edit your files...
+phylax daemon start
+```
+
+Press Q in the dashboard to stop the daemon.
+
+## Permission model
+
+Six buckets ordered by priority. Deny always wins.
+
+| Priority | Bucket | Meaning |
+|---|---|---|
+| 1 | [deny] | Complete block |
+| 2 | [ask] | User must approve |
+| 3 | [full] | Unrestricted |
+| 4 | [delete] | Read + Delete |
+| 5 | [write] | Read + Write |
+| 6 | [read] | Read only |
+
+Conservative default: read allowed, write asks, delete denied.
+
+## phylax.toml
+
+```toml
+[project]
+name = "phylax-project"
+default = "conservative"
+
+[deny]
+files = [".env", ".env.*", "secrets/**", "*.pem", "*.key"]
+
+[ask]
+files = ["Cargo.lock", "migrations/**"]
+
+[write]
+files = ["src/**", "tests/**"]
+
+[read]
+files = ["README.md", "docs/**"]
+```
+
+## All commands
+
+| Command | What it does |
+|---|---|
+| phylax init | Create phylax.toml, start daemon, register project |
+| phylax run | Start daemon + open dashboard |
+| phylax stop | Stop daemon (releases file locks) |
+| phylax status | Live status: projects, agents, events, blocks |
+| phylax project validate | Validate phylax.toml |
+| phylax project check -f <f> -o <op> | Dry-run file access check |
+| phylax project verify | Audit protection coverage |
+| phylax global add deny "*.env" | Add global deny rule |
+| phylax audit list | View audit history |
+| phylax update | Auto-update from GitHub |
+
+## Anti-bypass protection
+
+Three layers of Windows security per denied file:
+
+| Layer | Mechanism | Blocks |
+|---|---|---|
+| 1 | DENY ACE -> Everyone -> GENERIC_ALL | Read, write, delete |
+| 2 | DENY ACE -> Everyone -> WRITE_DAC, WRITE_OWNER, DELETE | ACL modification, ownership change |
+| 3 | MIC label -> High Integrity + NO_WRITE_UP | icacls /remove:d bypass |
+
+## Agent detection
+
+Five signals in priority order: S1 (env vars), S2 (image name), S3 (node.exe + agent keywords), S4 (Session 0 + no window), S5 (parent inheritance).
+
+Supported agents: Claude Code, Cursor, OpenCode, GitHub Copilot CLI, Windsurf, Aider, Goose, Cline, Gemini CLI.
+
+## 100% local
+
+No account, no cloud, no telemetry. Works fully offline. Audit logs in local SQLite. No API keys, no registration, no phone number.
+
+## Phase 1 vs Phase 2
+
+Phase 1 (Current): ACL-based enforcement. Protection active while daemon runs. ACEs apply to Everyone. Stop daemon to edit protected files.
+
+Phase 2 (In Development): Kernel minifilter driver. Agent-only blocking - you can edit denied files without stopping daemon. Real-time I/O IRP interception. Protection survives daemon restart. Per-agent overrides. Tamper-proof audit.
+
+Phase 2.5: Linux (fanotify + eBPF + Landlock) and macOS (Endpoint Security framework).
+
+Phase 3 (Project Nightfall): Behavioral learning, network boundary, distributed trust.
+
+## License
+
+Apache 2.0. See LICENSE and DISCLAIMER.md for details. Comes with no warranty.
