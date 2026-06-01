@@ -26,8 +26,8 @@ try {
 } catch {
     Write-Host "  Release not found on GitHub. If developing locally, build with:" -ForegroundColor DarkYellow
     Write-Host "    cargo build -p agentguard-cli --release" -ForegroundColor DarkYellow
-    Write-Host "    cargo build -p agentguard-daemon --release" -ForegroundColor DarkYellow
-    Write-Host "  Then copy target/release/phylax.exe to $BinDir" -ForegroundColor DarkYellow
+Write-Host "    cargo build -p agentguard-daemon --release" -ForegroundColor DarkYellow
+Write-Host "  Then copy target/release/phylax-daemon.exe to $BinDir" -ForegroundColor DarkYellow
 }
 
 Write-Host "[2/3] Downloading phylax-daemon.exe..." -ForegroundColor Yellow

@@ -69,7 +69,7 @@ async fn download_and_replace(version: &str) -> GuardResult<()> {
 
     let tmp_dir = std::env::temp_dir();
     let new_exe = tmp_dir.join("agentguard-new.exe");
-    let new_daemon = tmp_dir.join("agentguard-daemon-new.exe");
+    let new_daemon = tmp_dir.join("phylax-daemon-new.exe");
     let bat = tmp_dir.join("agentguard-update.bat");
 
     let exe_url = format!(
@@ -81,14 +81,14 @@ async fn download_and_replace(version: &str) -> GuardResult<()> {
 
     // Download daemon (optional)
     let daemon_url = format!(
-        "https://github.com/{REPO}/releases/download/v{version}/agentguard-daemon.exe"
+        "https://github.com/{REPO}/releases/download/v{version}/phylax-daemon.exe"
     );
     let _ = download_via_ps(&daemon_url, &new_daemon);
 
     // Write update batch script that replaces files after this process exits
     let new_exe_str = new_exe.display().to_string();
     let exe_dest = exe_dir.join("agentguard.exe");
-    let daemon_dest = exe_dir.join("agentguard-daemon.exe");
+    let daemon_dest = exe_dir.join("phylax-daemon.exe");
     let new_daemon_str = new_daemon.display().to_string();
 
     let bat_content = format!(

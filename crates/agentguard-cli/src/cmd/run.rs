@@ -1,6 +1,6 @@
 //! agentguard run — starts daemon + TUI together.
 //!
-//! Spawns agentguard-daemon.exe as a detached background process (no window,
+//! Spawns phylax-daemon.exe as a detached background process (no window,
 //! no console output), waits for IPC, then opens the TUI dashboard.
 
 use agentguard_core::{GuardError, GuardResult};
@@ -59,6 +59,6 @@ pub async fn run() -> GuardResult<()> {
 
 fn daemon_binary_path() -> std::path::PathBuf {
     let mut exe = std::env::current_exe().unwrap_or_default();
-    exe.set_file_name("agentguard-daemon.exe");
+    exe.set_file_name("phylax-daemon.exe");
     exe
 }

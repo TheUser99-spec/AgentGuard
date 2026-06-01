@@ -189,7 +189,7 @@ pub fn kill_daemon_by_name() {
         }
 
         let _ = std::process::Command::new("taskkill")
-            .args(["/F", "/IM", "agentguard-daemon.exe"])
+            .args(["/F", "/IM", "phylax-daemon.exe"])
             .stdout(std::process::Stdio::null())
             .stderr(std::process::Stdio::null())
             .spawn();

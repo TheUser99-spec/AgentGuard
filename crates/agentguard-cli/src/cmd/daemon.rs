@@ -154,7 +154,7 @@ fn kill_daemon_process() {
     #[cfg(windows)]
     {
         let _ = std::process::Command::new("taskkill")
-            .args(["/F", "/IM", "agentguard-daemon.exe"])
+            .args(["/F", "/IM", "phylax-daemon.exe"])
             .stdout(std::process::Stdio::null())
             .stderr(std::process::Stdio::null())
             .spawn();
@@ -164,7 +164,7 @@ fn kill_daemon_process() {
 #[cfg(windows)]
 fn kill_daemon_process_blocking(kill_tree: bool) -> GuardResult<()> {
     let mut cmd = std::process::Command::new("taskkill");
-    cmd.arg("/F").arg("/IM").arg("agentguard-daemon.exe");
+    cmd.arg("/F").arg("/IM").arg("phylax-daemon.exe");
     if kill_tree {
         cmd.arg("/T");
     }
@@ -200,7 +200,7 @@ fn kill_daemon_process_blocking(kill_tree: bool) -> GuardResult<()> {
 fn kill_daemon_process_elevated() -> GuardResult<()> {
     let ps = r#"
 try {
-  $p = Start-Process -FilePath 'taskkill.exe' -Verb RunAs -ArgumentList @('/F','/T','/IM','agentguard-daemon.exe') -PassThru -Wait
+  $p = Start-Process -FilePath 'taskkill.exe' -Verb RunAs -ArgumentList @('/F','/T','/IM','phylax-daemon.exe') -PassThru -Wait
   if ($null -eq $p) { exit 1 }
   exit $p.ExitCode
 } catch {
@@ -235,7 +235,7 @@ fn daemon_process_count() -> usize {
     let output = std::process::Command::new("tasklist")
         .args([
             "/FI",
-            "IMAGENAME eq agentguard-daemon.exe",
+            "IMAGENAME eq phylax-daemon.exe",
             "/FO",
             "CSV",
             "/NH",
@@ -262,7 +262,7 @@ fn daemon_process_count() -> usize {
             "-NoProfile",
             "-NonInteractive",
             "-Command",
-            "(Get-Process -Name 'agentguard-daemon' -ErrorAction SilentlyContinue | Measure-Object).Count",
+            "(Get-Process -Name 'phylax-daemon' -ErrorAction SilentlyContinue | Measure-Object).Count",
         ])
         .output();
 
@@ -282,7 +282,7 @@ fn daemon_process_count() -> usize {
 #[cfg(windows)]
 fn daemon_exe_path() -> std::path::PathBuf {
     let mut exe = std::env::current_exe().unwrap_or_default();
-    exe.set_file_name("agentguard-daemon.exe");
+    exe.set_file_name("phylax-daemon.exe");
     exe
 }
 
