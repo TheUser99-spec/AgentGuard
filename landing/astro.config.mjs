@@ -5,7 +5,7 @@ import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
   site: 'https://TheUser99-spec.github.io',
-  base: '/AgentGuard',
+  base: '/Phylax',
   integrations: [tailwind(), react()],
   output: 'static',
   build: { assets: 'assets' },

@@ -146,7 +146,7 @@ The landing page is an Astro 4 static site in `landing/`. It deploys to GitHub P
 
 **Key rules:**
 - Do NOT commit `node_modules/`, `dist/`, or `.astro/` (see `landing/.gitignore`)
-- All internal links must use `/AgentGuard/` prefix for GitHub Pages
+- All internal links must use `/Phylax/` prefix for GitHub Pages
 - Build with `npm run build` from `landing/`
 
 ## Verified status (as tested on 2026-05-29)

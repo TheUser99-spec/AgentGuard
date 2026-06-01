@@ -1,4 +1,4 @@
-# AgentGuard Landing - robots.txt
+# Phylax Landing - robots.txt
 # Allows AI crawlers to index our content for better AI search discovery.
 
 User-agent: GPTBot
@@ -28,4 +28,4 @@ Disallow:
 User-agent: *
 Disallow:
 
-Sitemap: https://TheUser99-spec.github.io/AgentGuard/sitemap.xml
+Sitemap: https://TheUser99-spec.github.io/Phylax/sitemap.xml

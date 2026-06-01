@@ -1,7 +1,7 @@
 <div align="center">
 
-![Stars](https://img.shields.io/github/stars/TheUser99-spec/AgentGuard?style=for-the-badge&color=f2c94c)
-![Version](https://img.shields.io/github/v/release/TheUser99-spec/AgentGuard?style=for-the-badge&color=6cdda3)
+![Stars](https://img.shields.io/github/stars/TheUser99-spec/Phylax?style=for-the-badge&color=f2c94c)
+![Version](https://img.shields.io/github/v/release/TheUser99-spec/Phylax?style=for-the-badge&color=6cdda3)
 ![License](https://img.shields.io/badge/license-Apache%202.0-blue?style=for-the-badge)
 
 </div>
@@ -41,7 +41,7 @@ Phylax draws a boundary. The agent can edit your source code. It can never touch
 ## Install
 
 ```powershell
-irm https://raw.githubusercontent.com/TheUser99-spec/AgentGuard/main/install.ps1 | iex
+irm https://raw.githubusercontent.com/TheUser99-spec/Phylax/main/install.ps1 | iex
 ```
 
 ---
@@ -156,7 +156,7 @@ Your files, your rules, your machine.
 ### Build from source
 
 ```bash
-git clone https://github.com/TheUser99-spec/AgentGuard.git
+git clone https://github.com/TheUser99-spec/Phylax.git
 cd Phylax
 cargo build --workspace --release
 ```
@@ -207,7 +207,7 @@ Comes with **no warranty**. See [DISCLAIMER.md](DISCLAIMER.md).
 
 **If Phylax saved your `.env` today, you know what to do →**
 
-[![Stars](https://img.shields.io/github/stars/TheUser99-spec/AgentGuard?style=social)](https://github.com/TheUser99-spec/AgentGuard)
+[![Stars](https://img.shields.io/github/stars/TheUser99-spec/Phylax?style=social)](https://github.com/TheUser99-spec/Phylax)
 
 <sub>Built with Rust — Windows-first, agent-proof.</sub>
 
