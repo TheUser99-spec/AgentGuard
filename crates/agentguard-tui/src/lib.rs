@@ -531,11 +531,11 @@ impl App {
 
         let left = Paragraph::new(vec![
             Line::from(vec![
-                Span::styled(" AgentGuard ", Style::default().fg(t::TEXT).add_modifier(Modifier::BOLD)),
+                Span::styled(" Phylax ", Style::default().fg(t::TEXT).add_modifier(Modifier::BOLD)),
                 dot, Span::raw("  "), live,
-                Span::styled("  WARDEN ZERO ", Style::default().fg(t::MUTED)),
+                Span::styled("  OS-LEVEL SECURITY ", Style::default().fg(t::MUTED)),
             ]),
-            Line::from(vec![Span::styled(" OS-level file safety for AI coding agents", Style::default().fg(t::MUTED))]),
+            Line::from(vec![Span::styled(" OS-level protection for AI coding agents", Style::default().fg(t::MUTED))]),
         ]);
         f.render_widget(left, top[0]);
 
@@ -612,7 +612,7 @@ impl App {
             ProtectionPosture::Protected => ("Safe to code", "Phylax is watching this workspace.", Tone::Good),
             ProtectionPosture::NeedsSetup => ("Add a project", "Run `phylax init` to protect a workspace.", Tone::Warn),
             ProtectionPosture::NeedsDecision => ("Approval needed", "An agent is waiting for your answer.", Tone::Warn),
-            ProtectionPosture::Offline => ("Not connected", "Start the AgentGuard daemon first.", Tone::Danger),
+            ProtectionPosture::Offline => ("Not connected", "Start the Phylax daemon first.", Tone::Danger),
         };
         let (_, next_label, next_tone) = self.next_action();
         let selected = self.selected_project.as_ref()
@@ -1304,7 +1304,7 @@ mod tests {
         let mut app = populated_app();
         let content = render(&mut app, 120, 35);
         assert!(content.contains("Phylax"));
-        assert!(content.contains("WARDEN ZERO"));
+        assert!(content.contains("OS-LEVEL SECURITY"));
     }
 
     #[test] fn all_tabs_are_present() {
