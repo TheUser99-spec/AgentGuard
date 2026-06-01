@@ -1,0 +1,15 @@
+[project]
+name = "phylax-demo"
+default = "conservative"
+
+[deny]
+files = [".env", ".env.*", "secrets/**", "*.pem", "*.key"]
+
+[ask]
+files = ["Cargo.lock", "migrations/**"]
+
+[write]
+files = ["src/**", "tests/**"]
+
+[read]
+files = ["README.md", "docs/**"]

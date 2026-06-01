@@ -122,7 +122,7 @@ pub async fn run_daemon() {
     });
 
     println!("Phylax Daemon v{} started", env!("CARGO_PKG_VERSION"));
-    println!("Dynamic agent detection: ACTIVE (2000ms polling)");
+    println!("Agent detection: ACTIVE (2000ms polling)");
     println!("File watcher: ACTIVE (5000ms polling)");
 
     tokio::select! {

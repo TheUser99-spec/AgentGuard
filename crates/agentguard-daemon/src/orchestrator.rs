@@ -129,7 +129,7 @@ impl DaemonState {
                     let prim = matches!(l, AgentLabel::Definite | AgentLabel::Probable);
                     if prim {
                         self.protect_all_projects();
-                        self.system_msg("warn", &format!("Agent detected: {} (PID={}) {:?}", i.image_name, i.pid, l));
+                        self.system_msg("warn", &format!("BLOCKED: Agent {} (PID={}) detected - deny rules applied", i.image_name, i.pid));
                     }
                     self.emit(IpcResponse::Event(StreamingEvent::AgentDetected(ActiveAgent{pid:i.pid,image_name:i.image_name.clone(),label:l,workspace:None,started_at:chrono::Utc::now().timestamp()})));
                     self.status_event();
