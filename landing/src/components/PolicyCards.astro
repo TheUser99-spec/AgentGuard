@@ -29,7 +29,7 @@ files = ["README.md", "docs/**"]`,
     summary: 'Maximum security. Every source edit and lockfile change requires explicit approval.',
     capabilities: 'Denies .env, .pem, .key, .p12, .pfx, secrets/**. Asks for every source edit. Read-only by default.',
     code: `[project]
-name = "agentguard-strict"
+name = "phylax-strict"
 default = "conservative"
 
 [deny]
@@ -48,7 +48,7 @@ files = ["README.md", "docs/**", "src/**", "tests/**"]`,
     summary: 'Lets agents edit freely. Only secrets and the manifest are protected.',
     capabilities: 'Blocks .env, .pem, .key, phylax.toml. Everything else is writable. No prompts for normal edits.',
     code: `[project]
-name = "agentguard-fast"
+name = "phylax-fast"
 default = "conservative"
 
 [deny]
