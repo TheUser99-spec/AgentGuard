@@ -28,4 +28,4 @@ Disallow:
 User-agent: *
 Disallow:
 
-Sitemap: https://TheUser99-spec.github.io/Phylax/sitemap.xml
+Sitemap: https://phylax.pages.dev/sitemap.xml

@@ -4,8 +4,8 @@ import react from '@astrojs/react';
 import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
-  site: 'https://TheUser99-spec.github.io',
-  base: '/Phylax',
+  site: 'https://phylax.pages.dev',
+  base: '/',
   integrations: [tailwind(), react()],
   output: 'static',
   build: { assets: 'assets' },
