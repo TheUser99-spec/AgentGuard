@@ -35,8 +35,7 @@ pub async fn run(no_create: bool, allow_unhealthy: bool) -> GuardResult<()> {
         Ok(()) => {}
         Err(e) => {
             println!("- Daemon not available: {e}");
-            println!("  Start it manually: cargo run -p phylax-daemon");
-            println!("  Or: phylax daemon start");
+            println!("  Start it manually: phylax daemon start");
             return Ok(());
         }
     }
@@ -89,8 +88,5 @@ Use `phylax project verify` to inspect and fix, or re-run with `--allow-unhealth
 }
 
 async fn ensure_daemon_running() -> GuardResult<()> {
-    if IpcClient::new().get_status().await.is_ok() {
-        return Ok(());
-    }
     super::daemon::start().await
 }

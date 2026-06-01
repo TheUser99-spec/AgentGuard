@@ -5,20 +5,18 @@ use std::time::Duration;
 pub async fn start() -> GuardResult<()> {
     #[cfg(windows)]
     {
-        // Check if daemon is already running
-        if let Ok(s) = IpcClient::new().get_status().await {
-            println!(
-                "+ Daemon already running (v{}, {} projects, {} agents)",
-                s.version,
-                s.projects.len(),
-                s.active_agents.len()
-            );
-            return Ok(());
-        }
-
-        // If IPC is inaccessible but a daemon process exists, do NOT spawn
-        // another one. This prevents split-brain/multi-daemon situations.
+        // Fast check: if daemon process exists, try IPC to confirm it's responsive
         if daemon_process_count() > 0 {
+            if let Ok(s) = IpcClient::new().get_status().await {
+                println!(
+                    "+ Daemon already running (v{}, {} project(s), {} agent(s))",
+                    s.version,
+                    s.projects.len(),
+                    s.active_agents.len()
+                );
+                return Ok(());
+            }
+            // Process exists but IPC is dead — refuse to spawn second instance
             return Err(GuardError::IpcError(
                 "daemon process already exists but IPC is inaccessible; refusing to spawn a second instance. Run `phylax daemon restart` from the same privilege/session.".into(),
             ));
@@ -52,7 +50,9 @@ pub async fn start() -> GuardResult<()> {
         }
 
         let client = IpcClient::new();
+        eprint!("  Waiting for daemon");
         for _ in 0..30 {
+            eprint!(".");
             tokio::time::sleep(Duration::from_millis(100)).await;
             let ok = tokio::time::timeout(Duration::from_millis(500), client.get_status())
                 .await
@@ -60,10 +60,11 @@ pub async fn start() -> GuardResult<()> {
                 .unwrap_or(false);
 
             if ok {
-                println!("+ Daemon started");
+                eprintln!(" ready");
                 return Ok(());
             }
         }
+        eprintln!();
         Err(GuardError::IpcError(
             "Daemon not responding after 3s — check daemon output for errors".into(),
         ))
