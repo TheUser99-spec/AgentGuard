@@ -1,4 +1,4 @@
-# AgentGuard Windows Installer
+# Phylax Windows Installer
 # Run: powershell -ExecutionPolicy Bypass -File install.ps1
 param(
     [string]$Version = "0.1.2",
@@ -6,11 +6,11 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
-$InstallDir = "$env:LOCALAPPDATA\AgentGuard"
+$InstallDir = "$env:LOCALAPPDATA\Phylax"
 $BinDir = "$InstallDir\bin"
-$Repo = "TheUser99-spec/AgentGuard"
+$Repo = "TheUser99-spec/Phylax"
 
-Write-Host "=== AgentGuard Installer v$Version ===" -ForegroundColor Cyan
+Write-Host "=== Phylax Installer v$Version ===" -ForegroundColor Cyan
 Write-Host ""
 
 # Create directories
@@ -18,24 +18,22 @@ New-Item -ItemType Directory -Force -Path $BinDir | Out-Null
 New-Item -ItemType Directory -Force -Path "$InstallDir\data" | Out-Null
 
 # Download binaries
-Write-Host "[1/3] Downloading agentguard.exe..." -ForegroundColor Yellow
-$ExeUrl = "https://github.com/$Repo/releases/download/v$Version/agentguard.exe"
+Write-Host "[1/3] Downloading phylax.exe..." -ForegroundColor Yellow
+$ExeUrl = "https://github.com/$Repo/releases/download/v$Version/phylax.exe"
 try {
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-    Invoke-WebRequest -Uri $ExeUrl -OutFile "$BinDir\agentguard.exe" -UserAgent "agentguard-installer"
+    Invoke-WebRequest -Uri $ExeUrl -OutFile "$BinDir\phylax.exe" -UserAgent "phylax-installer"
 } catch {
-    # If GitHub release not available yet, build from source hint
     Write-Host "  Release not found on GitHub. If developing locally, build with:" -ForegroundColor DarkYellow
     Write-Host "    cargo build -p agentguard-cli --release" -ForegroundColor DarkYellow
     Write-Host "    cargo build -p agentguard-daemon --release" -ForegroundColor DarkYellow
-    Write-Host "  Then copy target/release/agentguard.exe to $BinDir" -ForegroundColor DarkYellow
-    # Don't fail - continue for dev installs
+    Write-Host "  Then copy target/release/phylax.exe to $BinDir" -ForegroundColor DarkYellow
 }
 
-Write-Host "[2/3] Downloading agentguard-daemon.exe..." -ForegroundColor Yellow
-$DaemonUrl = "https://github.com/$Repo/releases/download/v$Version/agentguard-daemon.exe"
+Write-Host "[2/3] Downloading phylax-daemon.exe..." -ForegroundColor Yellow
+$DaemonUrl = "https://github.com/$Repo/releases/download/v$Version/phylax-daemon.exe"
 try {
-    Invoke-WebRequest -Uri $DaemonUrl -OutFile "$BinDir\agentguard-daemon.exe" -UserAgent "agentguard-installer"
+    Invoke-WebRequest -Uri $DaemonUrl -OutFile "$BinDir\phylax-daemon.exe" -UserAgent "phylax-installer"
 } catch {
     Write-Host "  Daemon binary not available from release. Local build required." -ForegroundColor DarkYellow
 }
@@ -59,12 +57,12 @@ Write-Host ""
 Write-Host "=== Installation complete! ===" -ForegroundColor Green
 Write-Host ""
 Write-Host "  Quick start:" -ForegroundColor White
-Write-Host "    agentguard init          Create agentguard.toml + register project"
-Write-Host "    agentguard run           Start daemon + open dashboard"
-Write-Host "    agentguard status        Show live status"
-Write-Host "    agentguard update        Check for updates"
+Write-Host "    phylax init          Create phylax.toml + register project"
+Write-Host "    phylax run           Start daemon + open dashboard"
+Write-Host "    phylax status        Show live status"
+Write-Host "    phylax update        Check for updates"
 Write-Host ""
 Write-Host "  Installed to: $BinDir" -ForegroundColor DarkGray
-Write-Host "  Database at: $env:APPDATA\AgentGuard\agentguard.db" -ForegroundColor DarkGray
+Write-Host "  Database at: $env:APPDATA\Phylax\phylax.db" -ForegroundColor DarkGray
 Write-Host ""
 Write-Host "  Restart your terminal or run: refreshenv" -ForegroundColor Yellow
