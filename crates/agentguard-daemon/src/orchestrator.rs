@@ -43,7 +43,16 @@ impl DaemonState {
     }
 
     pub fn register_project(&self, workspace: PathBuf) -> GuardResult<()> {
-        let w = normalize(workspace); let tp = find_manifest(&w)?; let mut mr = ProjectManifest::from_file(&tp)?; enforce_mandatory_denies(&mut mr); let h = hash_file(&tp)?;
+        let w = normalize(workspace); let tp = find_manifest(&w)?;
+        // phylax.toml may already have a DENY ACE from a previous daemon session
+        let had_ace = agentguard_enforce::ace::verify_ace(&tp).map(|h| h.content_deny || h.metadata_deny).unwrap_or(false);
+        if had_ace { agentguard_enforce::ace::remove_deny_ace(&tp)?; }
+        let read = (|| -> GuardResult<_> {
+            Ok((ProjectManifest::from_file(&tp)?, hash_file(&tp)?))
+        })();
+        if had_ace { let _ = agentguard_enforce::ace::apply_deny_ace(&tp); }
+        let (mut mr, h) = read?;
+        enforce_mandatory_denies(&mut mr);
         let n = w.file_name().map(|x| x.to_string_lossy().to_string()).unwrap_or_default();
         let c = CompiledManifest::compile(&mr, w.clone())?;
         let mut e = agentguard_enforce::Enforcer::new(w.clone()); e.apply_project_protections(&c)?;
