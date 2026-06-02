@@ -79,6 +79,11 @@ const devPathStructuredData = JSON.stringify({
           <strong>Incident #3 - The System Crash</strong>
           <p>The worst one. I was testing a security product prototype (similar to what Phylax would become). The AI agent, given broad filesystem access, <strong>wiped critical Windows files.</strong> The system froze. No response to keyboard, mouse, anything. Had to hard reboot. Lost hours of work, corrupted a project, and spent a day recovering. The agent didn't know what it was doing - it was just following instructions too literally, with no guardrails.</p>
         </div>
+
+        <div class="docs-note docs-note--warn">
+          <strong>Incident #4 - "You Don't Have Permission" Didn't Work</strong>
+          <p>After the crash, I tried the obvious fix: <strong>I told the AI explicitly it could not access certain files.</strong> I wrote rules in CLAUDE.md, added instructions in every prompt, said "do NOT read .env, do NOT touch config files." The AI <strong>acknowledged the rules</strong> — then read them anyway. It wasn't malicious. It just didn't have a real boundary. Text instructions are not security. That was the moment I knew: <strong>if the OS doesn't enforce it, the agent won't respect it.</strong></p>
+        </div>
       </div>
     </section>
 
