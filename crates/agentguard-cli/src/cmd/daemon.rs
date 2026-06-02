@@ -79,30 +79,22 @@ pub async fn start() -> GuardResult<()> {
 }
 
 pub async fn stop() -> GuardResult<()> {
-    // Send graceful shutdown via IPC
+    // Try graceful shutdown via IPC (fire and forget, don't wait for cleanup)
     let _ = IpcClient::new().shutdown().await;
+    tokio::time::sleep(Duration::from_millis(300)).await;
 
-    // Wait up to 5s for the daemon process to actually exit
-    for _ in 0..25 {
-        tokio::time::sleep(Duration::from_millis(200)).await;
-        if daemon_process_count() == 0 {
-            println!("+ Daemon stopped");
-            return Ok(());
-        }
-    }
-
-    // Still running — force kill
-    eprintln!("! Daemon did not exit gracefully, force killing...");
-    kill_daemon_process();
+    // Force kill any remaining daemon processes
+    force_kill_all_daemon_processes();
     tokio::time::sleep(Duration::from_millis(500)).await;
 
-    if daemon_process_count() == 0 {
-        println!("+ Daemon stopped (forced)");
+    let remaining = daemon_process_count();
+    if remaining == 0 {
+        println!("+ Daemon stopped");
         Ok(())
     } else {
-        Err(GuardError::IpcError(
-            "daemon process still running after forced kill — run `phylax daemon emergency-stop`".into(),
-        ))
+        Err(GuardError::IpcError(format!(
+            "Failed to kill {remaining} daemon process(es). Run as Administrator and try: phylax daemon emergency-stop"
+        )))
     }
 }
 
@@ -170,14 +162,60 @@ pub async fn emergency_stop() -> GuardResult<()> {
 }
 
 fn kill_daemon_process() {
-    #[cfg(windows)]
+    force_kill_all_daemon_processes();
+}
+
+#[cfg(windows)]
+fn force_kill_all_daemon_processes() {
+    use std::ffi::OsString;
+    use std::os::windows::ffi::OsStringExt;
+    use windows_sys::Win32::Foundation::CloseHandle;
+    use windows_sys::Win32::System::Diagnostics::ToolHelp::{
+        CreateToolhelp32Snapshot, Process32FirstW, Process32NextW, PROCESSENTRY32W,
+        TH32CS_SNAPPROCESS,
+    };
+    use windows_sys::Win32::System::Threading::{OpenProcess, TerminateProcess, PROCESS_TERMINATE};
+
+    let handle = unsafe { CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0) };
+    if handle == std::ptr::null_mut()
+        || handle == windows_sys::Win32::Foundation::INVALID_HANDLE_VALUE
     {
+        // Fallback to taskkill
         let _ = std::process::Command::new("taskkill")
-            .args(["/F", "/IM", "phylax-daemon.exe"])
+            .args(["/F", "/T", "/IM", "phylax-daemon.exe"])
             .stdout(std::process::Stdio::null())
             .stderr(std::process::Stdio::null())
-            .spawn();
+            .output();
+        return;
     }
+
+    let mut entry = PROCESSENTRY32W {
+        dwSize: std::mem::size_of::<PROCESSENTRY32W>() as u32,
+        ..unsafe { std::mem::zeroed() }
+    };
+
+    let mut ok = unsafe { Process32FirstW(handle, &mut entry) };
+    while ok != 0 {
+        let name = OsString::from_wide(trim_null(&entry.szExeFile))
+            .to_string_lossy()
+            .to_ascii_lowercase();
+        if name == "phylax-daemon.exe" {
+            let pid = entry.th32ProcessID;
+            let ph = unsafe { OpenProcess(PROCESS_TERMINATE, 0, pid) };
+            if !ph.is_null() {
+                unsafe { TerminateProcess(ph, 1); }
+                unsafe { CloseHandle(ph); }
+            }
+        }
+        ok = unsafe { Process32NextW(handle, &mut entry) };
+    }
+
+    unsafe { CloseHandle(handle) };
+}
+
+#[cfg(not(windows))]
+fn force_kill_all_daemon_processes() {
+    let _ = std::process::Command::new("pkill").arg("-f").arg("phylax-daemon").output();
 }
 
 #[cfg(windows)]

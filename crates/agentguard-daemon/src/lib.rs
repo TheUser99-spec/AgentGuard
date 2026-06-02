@@ -148,8 +148,15 @@ pub async fn run_daemon() {
     }
 
     eprintln!("[daemon] Releasing all project protections...");
-    state.release_all_projects();
-    eprintln!("[daemon] All ACEs released.");
+    let release_state = Arc::clone(&state);
+    let release_done = tokio::task::spawn_blocking(move || {
+        release_state.release_all_projects();
+    });
+    match tokio::time::timeout(std::time::Duration::from_secs(3), release_done).await {
+        Ok(Ok(())) => eprintln!("[daemon] All ACEs released."),
+        Ok(Err(e)) => eprintln!("[daemon] WARN: ACE release join error: {e}"),
+        Err(_) => eprintln!("[daemon] WARN: ACE release timed out after 3s — files may remain protected until next daemon start"),
+    }
 
     let _ = shutdown_tx.try_send(());
     drop(poller_stop_tx);
