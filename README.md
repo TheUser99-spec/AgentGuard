@@ -31,9 +31,7 @@ Phylax draws a boundary. The agent can edit your source code. It can never touch
 ## Demo
 
 <p align="center">
-  <i>🎬 Demo GIF coming soon</i>
-  <br>
-  <sub><code>phylax run</code> and watch the dashboard light up.</sub>
+  <img src="assets/VideoProject4-ezgif.com-video-to-gif-converter.gif" alt="Phylax Demo" width="720">
 </p>
 
 ---
