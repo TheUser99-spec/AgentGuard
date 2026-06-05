@@ -9,7 +9,8 @@ import InstallSection from '../components/InstallSection.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 
 const title = 'Phylax - OS-level Protection for AI Coding Agents';
-const description = 'Phylax blocks dangerous file access before AI agents touch your secrets. 100% local, no accounts, no cloud, no telemetry. Windows ACL enforcement.';
+const description = 'Phylax stops AI agents from reading secrets, deleting files, or touching anything outside your source code. 100% local, kernel-level Windows ACL enforcement.';
+const image = '/og-card.png';
 const homeStructuredData = JSON.stringify({
   '@context': 'https://schema.org',
   '@graph': [
@@ -100,7 +101,7 @@ const homeStructuredData = JSON.stringify({
 });
 ---
 
-<Base title={title} description={description} structuredData={homeStructuredData}>
+<Base title={title} description={description} image={image} structuredData={homeStructuredData}>
   <main>
     <Hero />
     <WhyPhylax />

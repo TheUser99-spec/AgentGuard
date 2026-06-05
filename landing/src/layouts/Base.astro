@@ -3,9 +3,9 @@ import '../styles/global.css';
 import '../styles/experience.css';
 
 const {
-  title = 'Phylax - OS-level safety for AI coding agents',
-  description = 'Phylax is a Windows security layer that stops AI coding agents from reading, writing, or deleting files outside your rules.',
-  image = '/logo.jpg',
+  title = 'Phylax - OS-level protection for AI coding agents',
+  description = 'Phylax stops AI agents from reading secrets, deleting files, or touching anything outside your source code. Kernel-level Windows ACL enforcement.',
+  image = '/og-card.png',
   canonical = '',
   structuredData = '',
 } = Astro.props;
@@ -20,14 +20,20 @@ const {
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta name="theme-color" content="#f7f5ee" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#101312" />
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <meta name="author" content="Phylax" />
+    <meta name="application-name" content="Phylax" />
 
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
     <link rel="canonical" href={canonical || Astro.url} />
     <link rel="sitemap" href="/sitemap.xml" />
 
-    <!-- Open Graph -->
+    <!-- Open Graph / Facebook / WhatsApp / Telegram / Discord -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Phylax" />
     <meta property="og:locale" content="en_US" />
@@ -38,12 +44,14 @@ const {
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:alt" content="Phylax - OS-level protection for AI coding agents" />
 
-    <!-- Twitter Card -->
+    <!-- Twitter / X Card -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={new URL(image, Astro.url).href} />
+    <meta name="twitter:image:alt" content="Phylax - OS-level protection for AI coding agents" />
 
     <!-- Structured Data -->
     {structuredData && <script type="application/ld+json" set:html={structuredData}></script>}
