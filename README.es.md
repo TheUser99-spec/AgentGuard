@@ -211,6 +211,20 @@ cargo build --workspace --release
 | [IPC & daemon/CLI](docs/06-ipc-daemon-cli.md) | Protocolo + ciclo de vida |
 | [ADR index](docs/adr/README.md) | Decisiones de arquitectura |
 | [Landing page](https://phylax.pages.dev) | Sitio completo del producto |
+| [Tutorial](https://phylax.pages.dev/tutorial) | Guía de 5 minutos |
+| [Kit para creadores](TUTORIAL-KIT.md) | Scripts de video para YouTubers |
+| [Kit de prensa](PRESS-KIT.md) | Logos, colores, assets de marca |
+| [Currículum](CURRICULUM.md) | Curso completo (35 lecciones) |
+
+---
+
+## Comunidad
+
+- ⭐ [GitHub](https://github.com/TheUser99-spec/Phylax) — estrellas, issues, contribuciones
+- 🐦 [X / Twitter](https://x.com/Phylaxdev) — actualizaciones, anuncios
+- 📖 [Documentación](https://phylax.pages.dev/docs) — referencia completa
+- 🎓 [Tutorial](https://phylax.pages.dev/tutorial) — empieza en 5 minutos
+- 🎬 [Kit para creadores](TUTORIAL-KIT.md) — haz un video sobre Phylax
 
 ---
 

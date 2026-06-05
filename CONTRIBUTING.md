@@ -1,149 +1,163 @@
-# Contributing to AgentGuard
+# 🤝 Contributing to Phylax
 
-## Architecture Rules (MUST FOLLOW)
+Thanks for your interest in contributing! Phylax is an open-source project and we welcome contributions from everyone.
 
-### Dependency DAG (inviolable)
+---
 
-```
-core (0 external deps)
-  ├─ manifest
-  ├─ store
-  ├─ policy
-  ├─ probe, enforce, ipc, notify
-  └─ daemon ──→ cli, tui
-```
+## Code of Conduct
 
-**NEVER**:
-- Add a dependency from `manifest` to `enforce` or from any crate to a crate farther right in the DAG
-- Add a circular dependency (e.g., `policy` ← `manifest`)
-- Import from `daemon` into `core`, `manifest`, or `policy`
-- Add dependencies to `agentguard-core` (it must remain zero-deps for portability)
+Be respectful. Be constructive. We're building security software — quality and correctness matter more than speed.
 
-### Realpath Security (CVE-2025-59829)
+---
 
-**ALWAYS canonicalize before glob match**:
+## How to Contribute
 
-```rust
-// CORRECT
-let canonical = std::fs::canonicalize(&path)?;
-manifest.evaluate(&canonical, &op)?;
+### 🐛 Reporting Bugs
 
-// WRONG (symlink bypass!)
-manifest.evaluate(&path, &op)?;
-```
+1. Check [existing issues](https://github.com/TheUser99-spec/Phylax/issues) to avoid duplicates
+2. Use the bug report template
+3. Include:
+   - Windows version (`winver`)
+   - Phylax version (`phylax --version`)
+   - Steps to reproduce
+   - Expected vs actual behavior
+   - Relevant logs from `%APPDATA%\Phylax\phylax.db`
 
-`CompiledManifest::evaluate()` has a `debug_assert!` enforcing this contract.
-Read [ADR-002](docs/adr/002-deny-aces-vs-minifilter-phase1.md) for the full context.
+### 💡 Feature Requests
 
-### Database Access
+1. Check [existing issues](https://github.com/TheUser99-spec/Phylax/issues) and [the roadmap](https://phylax.pages.dev/development-path)
+2. Explain the problem you're trying to solve
+3. Describe your proposed solution
+4. Consider Phase timing (Phase 1 = user-mode ACLs, Phase 2 = kernel driver)
 
-All database operations go through `agentguard-store`. No other crate imports `rusqlite`
-directly. If you need to read or write data, add a method to `Store` in
-`crates/agentguard-store/src/queries.rs`.
+### 🔧 Pull Requests
 
-## Testing Requirements
+1. **Fork the repo** and create a branch from `main`
+2. **Keep PRs focused** — one feature/fix per PR
+3. **Follow the dependency direction:**
+   ```
+   core ← manifest ← policy ← (enforce, audit, probe, notify, ipc) ← daemon ← cli, tui
+   ```
+4. **Do not modify** without approval:
+   - Root `Cargo.toml`
+   - `crates/agentguard-core/src/types.rs`
+   - `crates/agentguard-store/src/migrations.rs`
+   - `driver/**`
+   - `modules/**`
+   - `docs/adr/**` (append new ADRs, don't delete historical ones)
+5. **Write tests** for new functionality
+6. **Run tests before submitting:**
+   ```bash
+   cargo test --workspace
+   cargo test -p <your-crate>
+   ```
+7. **Use conventional commits:** `feat(scope): description`, `fix(scope): description`
 
-### Before submitting a PR
+---
 
-- [ ] All tests pass: `cargo test --workspace`
-- [ ] All lints pass: `cargo clippy --workspace --tests -- -D warnings`
-- [ ] New functions have tests (target 80%+ coverage on new code)
+## Development Setup
 
-### Security Gate (required before AI-agent sessions)
+### Prerequisites
 
-Run the deny-enforcement gate and ensure `GO`:
+- **Rust** (stable, latest)
+- **Windows 10 or 11** (primary platform)
+- **Visual Studio Build Tools** (for C++ driver in Phase 2)
 
-```powershell
-.\scripts\agentguard-go.ps1 -Workspace C:\Users\omkde\AgentGuard
-```
-
-Manual equivalent:
-
-```powershell
-agentguard project validate
-agentguard project verify --json
-```
-
-`project verify --json` must report:
-- `schema_version = 1`
-- `effective_deny_paths == total_deny_paths`
-
-### Critical paths that MUST have tests
-
-- Manifest parsing and compiled manifest evaluation
-- Policy evaluation (global, project, default layers)
-- Daemon orchestrator (evaluation, global rules, ask flow)
-- IPC protocol (serialization, request/response roundtrips)
-- SQLite store (CRUD operations, migrations)
-
-### Running specific tests
+### Build
 
 ```bash
-cargo test --workspace                    # All tests
-cargo test -p agentguard-manifest         # Manifest tests only
-cargo test -p agentguard-daemon           # Daemon tests only
-cargo test -p agentguard-policy           # Policy tests only
-cargo test -p agentguard-audit            # Audit tests only
-cargo test -p agentguard-store            # Store tests only
+git clone https://github.com/TheUser99-spec/Phylax.git
+cd Phylax
+cargo build --workspace
 ```
 
-## Code Style
+### Run tests
 
-- No comments unless explaining non-obvious logic (the code documents itself)
-- Use `GuardResult<T>` (alias for `Result<T, GuardError>`) for all fallible operations
-- Use `recover_lock!()` macro for all `RwLock` accesses (handles poisoning)
-- Prefer `debug_assert!` for security invariants (stripped in release, checked in tests)
-- `unsafe` blocks must be justified and kept to a minimum (currently ~280 LOC / 10K+)
+```bash
+# All tests
+cargo test --workspace
 
-## Permission Model
-
-6 buckets in descending priority:
-
-| Priority | Bucket | Read | Write | Delete |
-|----------|--------|------|-------|--------|
-| 1 (max)  | deny   | No   | No    | No     |
-| 2        | ask    | Prompt | Prompt | Prompt |
-| 3        | full   | Yes  | Yes   | Yes    |
-| 4        | delete | Yes  | No    | Yes    |
-| 5        | write  | Yes  | Yes   | No     |
-| 6        | read   | Yes  | No    | No     |
-
-**deny ALWAYS wins**, even if the file also appears in write or full.
-If a file doesn't appear in any bucket → `default_mode` applies:
-- `conservative`: read=Allow, write=Ask, delete=Deny
-- `unrestricted`: all Allow
-
-4-layer evaluation precedence:
+# Specific crate
+cargo test -p agentguard-manifest
+cargo test -p agentguard-store
+cargo test -p agentguard-policy
 ```
-Global rules (system-wide)  ← highest
-  ↓
-Agent rules (per-image)     ← per executable
-  ↓
-Project rules (per-workspace) ← phylax.toml
-  ↓
-Default (conservative/unrestricted)
+
+### Run the daemon
+
+```bash
+cargo run -p agentguard-daemon
 ```
+
+### Run the TUI dashboard
+
+```bash
+cargo run -p agentguard-tui
+```
+
+---
 
 ## Project Structure
 
-| Crate | Purpose | Portability |
-|-------|---------|-------------|
-| `agentguard-core` | Base types + errors | Cross-platform |
-| `agentguard-manifest` | TOML parser + GlobSets | Cross-platform |
-| `agentguard-policy` | Policy engine (global > project) | Cross-platform |
-| `agentguard-store` | SQLite storage | Cross-platform |
-| `agentguard-probe` | ETW + process classification | Windows-only |
-| `agentguard-enforce` | DENY ACEs + Job Objects | Windows-only |
-| `agentguard-ipc` | Named pipe protocol | Windows-only |
-| `agentguard-notify` | Toast notifications | Windows-only |
-| `agentguard-audit` | Audit event logging | Cross-platform |
-| `agentguard-daemon` | Windows Service orchestrator | Windows-only |
-| `agentguard-cli` | CLI tool | Cross-platform |
-| `agentguard-tui` | Terminal dashboard | Cross-platform |
+```
+crates/
+  agentguard-core/      ← Base types and shared errors (no external deps)
+  agentguard-manifest/  ← phylax.toml parser + compiled GlobSets
+  agentguard-policy/    ← Decision engine (deny > ask > full > delete > write > read)
+  agentguard-store/     ← SQLite access and schema ownership
+  agentguard-probe/     ← Process polling + subject classification
+  agentguard-enforce/   ← ACL/ACE enforcement and coordination
+  agentguard-ipc/       ← Named-pipe protocol and client/server
+  agentguard-notify/    ← User prompts/notifications for [ask]
+  agentguard-audit/     ← Audit logging integration
+  agentguard-daemon/    ← Main orchestrator/service logic
+  agentguard-cli/       ← CLI entrypoint and commands
+  agentguard-tui/       ← Ratatui dashboard
+  agentguard-mascot/    ← Optional terminal mascot UI
 
-## Architecture Decision Records
+driver/                 ← C++ minifilter (Phase 2, modify with caution)
+modules/                ← Phase 3/4 placeholders
+docs/                   ← Architecture docs and ADRs
+landing/                ← Astro landing page (phylax.pages.dev)
+```
 
-All significant architectural decisions are documented in [docs/adr/](docs/adr/).
-Read them before proposing changes to the core architecture.
-To add a new ADR, use the template in [docs/adr/README.md](docs/adr/README.md) and
-follow the rule: **only add, never delete**.
+---
+
+## Coding Conventions
+
+- **Rust:** Follow standard Rust conventions (`rustfmt`, `clippy`)
+- **C++ (driver):** Windows kernel coding style
+- **Astro:** Follow existing component patterns in `landing/src/`
+- **Path canonicalization** is mandatory before glob matching:
+  ```rust
+  let canonical = std::fs::canonicalize(&path)?;
+  let relative = canonical.strip_prefix(&workspace_root)?;
+  compiled_manifest.evaluate(relative, &op);
+  ```
+- **Store is the only DB boundary** — no other crate imports `rusqlite` directly
+- **Test before claiming behavior**
+
+---
+
+## Permission Model
+
+Priority order: `deny` > `ask` > `full` > `delete` > `write` > `read`
+
+`deny` always wins. Default when no rule matches:
+- `conservative`: read Allow, write Ask, delete Deny
+- `unrestricted`: Allow all
+
+---
+
+## Getting Help
+
+- **Docs:** https://phylax.pages.dev/docs
+- **FAQ:** https://phylax.pages.dev/faq
+- **Issues:** https://github.com/TheUser99-spec/Phylax/issues
+- **X/Twitter:** https://x.com/Phylaxdev
+
+---
+
+## Recognition
+
+All contributors will be listed in the project. Significant contributions may be highlighted in release notes and on the website.

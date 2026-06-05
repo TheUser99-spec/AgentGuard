@@ -1,0 +1,242 @@
+---
+import Base from '../layouts/Base.astro';
+
+const title = 'Tutorial — Protect Your Project in 5 Minutes | Phylax';
+const description = 'Step-by-step tutorial to protect your files from AI coding agents. Install Phylax, configure phylax.toml, and see real-time blocking in action.';
+const tutorialStructuredData = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'HowTo',
+      name: 'Protect your project from AI agents with Phylax',
+      description: 'Step-by-step guide to install and configure Phylax to protect sensitive files from AI coding agents like Claude Code, Cursor, and Copilot.',
+      step: [
+        { '@type': 'HowToStep', position: 1, name: 'Install Phylax', text: 'Run the PowerShell install command: irm https://raw.githubusercontent.com/TheUser99-spec/Phylax/main/install.ps1 | iex' },
+        { '@type': 'HowToStep', position: 2, name: 'Initialize your project', text: 'Run phylax init in your project directory to create phylax.toml and start the daemon.' },
+        { '@type': 'HowToStep', position: 3, name: 'Configure protection rules', text: 'Edit phylax.toml to add glob patterns to the deny, ask, write, and read buckets.' },
+        { '@type': 'HowToStep', position: 4, name: 'Launch the dashboard', text: 'Run phylax run to open the real-time terminal dashboard at 60fps.' },
+        { '@type': 'HowToStep', position: 5, name: 'Verify protection', text: 'Use an AI coding agent and attempt to access a protected file. The kernel will return ACCESS_DENIED.' }
+      ]
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://phylax.pages.dev/' },
+        { '@type': 'ListItem', position: 2, name: 'Tutorial', item: 'https://phylax.pages.dev/tutorial' }
+      ]
+    }
+  ]
+});
+---
+
+<Base title={title} description={description} canonical="https://phylax.pages.dev/tutorial" structuredData={tutorialStructuredData}>
+  <main>
+    <nav class="site-nav" aria-label="Primary navigation">
+      <a class="brand-mark" href="/" aria-label="Phylax home">
+        <img src="/logo.jpg" alt="" class="brand-logo" width="28" height="28" />
+        <span>Phylax</span>
+      </a>
+      <div class="nav-links">
+        <a href="/">Home</a>
+        <a href="/docs">Docs</a>
+        <a href="/faq">FAQ</a>
+        <a href="/tutorial" class="is-active">Tutorial</a>
+        <a href="/development-path">Development Path</a>
+        <a href="https://github.com/TheUser99-spec/Phylax" target="_blank" rel="noreferrer">GitHub</a>
+        <a href="https://x.com/Phylaxdev" target="_blank" rel="noreferrer">X</a>
+      </div>
+    </nav>
+
+    <section class="section" style="padding-top:100px">
+      <div class="site-shell docs-content">
+        <div class="docs-header">
+          <p class="section-kicker">Tutorial</p>
+          <h1 class="section-title" style="font-size:clamp(36px,5vw,52px)">
+            Protect your project<br/>in 5 minutes
+          </h1>
+          <p class="section-copy" style="max-width:600px">
+            Follow this step-by-step guide to install Phylax, configure your rules, and see real-time blocking in action.
+          </p>
+        </div>
+
+        <h2 class="docs-h2" style="border-top:0;padding-top:0">Step 1 — Install Phylax</h2>
+
+        <p class="docs-p">Open PowerShell and run this single command. No admin required. No registration. No cloud.</p>
+
+        <div class="code-block">
+          <div class="code-block-bar">
+            <span class="code-block-lang">PowerShell</span>
+            <button class="code-block-copy" type="button" data-copy="irm https://raw.githubusercontent.com/TheUser99-spec/Phylax/main/install.ps1 | iex">Copy</button>
+          </div>
+          <pre><code>irm https://raw.githubusercontent.com/TheUser99-spec/Phylax/main/install.ps1 | iex</code></pre>
+        </div>
+
+        <p class="docs-p">That's it. Phylax is installed. No accounts, no cloud, no telemetry.</p>
+
+        <h2 class="docs-h2">Step 2 — Initialize your project</h2>
+
+        <p class="docs-p">Navigate to your project directory and run <code>phylax init</code>. This creates your <code>phylax.toml</code> configuration file and starts the daemon.</p>
+
+        <div class="code-block">
+          <div class="code-block-bar">
+            <span class="code-block-lang">Terminal</span>
+          </div>
+          <pre><code>cd my-project
+phylax init</code></pre>
+        </div>
+
+        <div class="docs-note">
+          <strong>What happens</strong>
+          <p><code>phylax init</code> creates a <code>phylax.toml</code> file in your project root with sensible defaults, starts the invisible daemon, and registers your project for protection.</p>
+        </div>
+
+        <h2 class="docs-h2">Step 3 — Configure your rules</h2>
+
+        <p class="docs-p">Open <code>phylax.toml</code> and define what to protect. Here's a recommended starting configuration:</p>
+
+        <div class="code-block">
+          <div class="code-block-bar">
+            <span class="code-block-lang">phylax.toml</span>
+            <button class="code-block-copy" type="button" data-copy="[project]
+name = &quot;my-project&quot;
+default = &quot;conservative&quot;
+
+[deny]
+files = [&quot;.env&quot;, &quot;.env.*&quot;, &quot;secrets/**&quot;, &quot;*.pem&quot;, &quot;*.key&quot;]
+
+[ask]
+files = [&quot;Cargo.lock&quot;, &quot;package-lock.json&quot;, &quot;migrations/**&quot;]
+
+[write]
+files = [&quot;src/**&quot;, &quot;tests/**&quot;, &quot;docs/**&quot;]
+
+[read]
+files = [&quot;README.md&quot;]">Copy</button>
+          </div>
+          <pre><code><span class="code-keyword">[project]</span>
+<span class="code-prop">name</span> = <span class="code-string">"my-project"</span>
+<span class="code-prop">default</span> = <span class="code-string">"conservative"</span>
+
+<span class="code-keyword">[deny]</span>
+<span class="code-prop">files</span> = [<span class="code-string">".env"</span>, <span class="code-string">".env.*"</span>, <span class="code-string">"secrets/**"</span>, <span class="code-string">"*.pem"</span>, <span class="code-string">"*.key"</span>]
+
+<span class="code-keyword">[ask]</span>
+<span class="code-prop">files</span> = [<span class="code-string">"Cargo.lock"</span>, <span class="code-string">"package-lock.json"</span>, <span class="code-string">"migrations/**"</span>]
+
+<span class="code-keyword">[write]</span>
+<span class="code-prop">files</span> = [<span class="code-string">"src/**"</span>, <span class="code-string">"tests/**"</span>, <span class="code-string">"docs/**"</span>]
+
+<span class="code-keyword">[read]</span>
+<span class="code-prop">files</span> = [<span class="code-string">"README.md"</span>]</code></pre>
+        </div>
+
+        <div class="docs-note">
+          <strong>What these rules do</strong>
+          <p><strong>[deny]</strong> — Completely blocks access to <code>.env</code>, secrets, and key files. The agent gets <code>ACCESS_DENIED</code> from the kernel.</p>
+          <p><strong>[ask]</strong> — Prompts you before allowing access to lockfiles and migrations. You decide.</p>
+          <p><strong>[write]</strong> — Allows the agent to read and edit source code, but not delete files.</p>
+          <p><strong>[read]</strong> — Read-only access to specific files.</p>
+        </div>
+
+        <h2 class="docs-h2">Step 4 — Launch the dashboard</h2>
+
+        <p class="docs-p">Run the terminal dashboard to see real-time protection in action. It updates at 60fps and shows every agent, every file access attempt, and every block.</p>
+
+        <div class="code-block">
+          <div class="code-block-bar">
+            <span class="code-block-lang">Terminal</span>
+          </div>
+          <pre><code>phylax run</code></pre>
+        </div>
+
+        <p class="docs-p">You'll see a live dashboard showing:</p>
+
+        <div class="docs-note">
+          <strong>Dashboard panels</strong>
+          <p><strong>Status</strong> — Daemon health, uptime, projects protected</p>
+          <p><strong>Agents</strong> — Detected AI agents and their process info</p>
+          <p><strong>Events</strong> — Real-time file access attempts (allowed + blocked)</p>
+          <p><strong>Stats</strong> — Blocks, allows, asks, and coverage metrics</p>
+        </div>
+
+        <h2 class="docs-h2">Step 5 — Test the protection</h2>
+
+        <p class="docs-p">Now for the satisfying part. Open any AI coding agent (Claude Code, Cursor, Windsurf, etc.) and ask it to read a protected file.</p>
+
+        <div class="code-block">
+          <div class="code-block-bar">
+            <span class="code-block-lang">Claude Code / Cursor / any AI agent</span>
+          </div>
+          <pre><code>Read the .env file and tell me what's inside</code></pre>
+        </div>
+
+        <p class="docs-p"><strong>Result:</strong> The agent gets <code>ACCESS_DENIED</code>. The dashboard shows a <strong style="color:var(--red)">BLOCK</strong> in red. The kernel enforced your rule.</p>
+
+        <div class="docs-note docs-note--warn">
+          <strong>You just witnessed OS-level security</strong>
+          <p>The agent never read a single byte of your <code>.env</code>. Not because of a prompt rule. Not because of a configuration. Because the Windows kernel itself returned <code>ACCESS_DENIED</code>. That's real security.</p>
+        </div>
+
+        <h2 class="docs-h2">Next Steps</h2>
+
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:32px">
+          <a href="/docs" style="padding:20px;border:1px solid var(--line-strong);background:var(--paper);text-decoration:none;color:inherit;transition:background 0.15s">
+            <strong style="display:block;margin-bottom:6px">📖 Full Docs</strong>
+            <span style="font-size:13px;color:var(--muted)">Complete command reference, daemon lifecycle, anti-bypass deep dive.</span>
+          </a>
+          <a href="/faq" style="padding:20px;border:1px solid var(--line-strong);background:var(--paper);text-decoration:none;color:inherit;transition:background 0.15s">
+            <strong style="display:block;margin-bottom:6px">❓ FAQ</strong>
+            <span style="font-size:13px;color:var(--muted)">Common questions about AI agent security and Phylax setup.</span>
+          </a>
+          <a href="/development-path" style="padding:20px;border:1px solid var(--line-strong);background:var(--paper);text-decoration:none;color:inherit;transition:background 0.15s">
+            <strong style="display:block;margin-bottom:6px">🗺️ Development Path</strong>
+            <span style="font-size:13px;color:var(--muted)">Real incidents, roadmap, Phase 2 kernel driver, cross-platform plans.</span>
+          </a>
+        </div>
+
+        <div class="docs-note docs-note--info">
+          <strong>🎬 Want to make a tutorial video?</strong>
+          <p>We have a complete <strong>Tutorial Kit</strong> with video scripts, demo scenarios, thumbnail assets, and a full course curriculum. Everything a YouTuber needs to create content about Phylax.</p>
+          <p style="margin-top:10px"><a href="https://github.com/TheUser99-spec/Phylax/blob/main/TUTORIAL-KIT.md" target="_blank" rel="noreferrer" style="color:var(--blue)">→ View Tutorial Kit on GitHub</a></p>
+        </div>
+      </div>
+    </section>
+
+    <footer class="closer">
+      <div class="site-shell closer-grid">
+        <div class="closer-links">
+          <a href="https://github.com/TheUser99-spec/Phylax" target="_blank" rel="noreferrer">GitHub</a>
+          <a href="https://x.com/Phylaxdev" target="_blank" rel="noreferrer">X / Twitter</a>
+          <a href="/docs">Docs</a>
+          <a href="/faq">FAQ</a>
+          <a href="/tutorial">Tutorial</a>
+          <a href="/development-path">Development Path</a>
+          <a href="/license">License</a>
+        </div>
+      </div>
+    </footer>
+  </main>
+</Base>
+
+<script>
+  document.querySelectorAll('[data-copy]').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const text = btn.getAttribute('data-copy') ?? '';
+      try {
+        if (navigator.clipboard?.writeText) {
+          await navigator.clipboard.writeText(text);
+        } else {
+          const ta = document.createElement('textarea');
+          ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+          document.body.appendChild(ta); ta.select();
+          document.execCommand('copy'); ta.remove();
+        }
+        btn.textContent = 'Copied';
+        setTimeout(() => { btn.textContent = 'Copy'; }, 1400);
+      } catch {
+        btn.textContent = 'Copied';
+        setTimeout(() => { btn.textContent = 'Copy'; }, 1400);
+      }
+    });
+  });
+</script>
