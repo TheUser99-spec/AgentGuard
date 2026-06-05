@@ -4,7 +4,7 @@ import '../styles/experience.css';
 
 const {
   title = 'Phylax - OS-level protection for AI coding agents',
-  description = 'Phylax stops AI agents from reading secrets, deleting files, or touching anything outside your source code. Kernel-level Windows ACL enforcement.',
+  description = 'Phylax is a Windows security layer for AI coding agents. Phase 1 user-mode ACL enforcement. Open source, Apache 2.0. Seeking technical review.',
   image = '/og-card.png',
   canonical = '',
   structuredData = '',
@@ -58,6 +58,31 @@ const {
 
     <!-- Structured Data -->
     {structuredData && <script type="application/ld+json" set:html={structuredData}></script>}
+
+    <!-- Outbound click analytics (local-only, no backend) -->
+    <script is:inline>
+      (function() {
+        var store = (function() {
+          try { var d = JSON.parse(localStorage.getItem('_pa') || '{}'); return d && typeof d === 'object' ? d : {}; } catch(e) { return {}; }
+        })();
+        store._v = store._v || 1;
+        if (!store.clicks) store.clicks = {};
+        if (!store.sessions) store.sessions = 0;
+        store.sessions++;
+        var save = function() { try { localStorage.setItem('_pa', JSON.stringify(store)); } catch(e) {} };
+        save();
+        document.addEventListener('click', function(e) {
+          var a = e.target.closest('a'); if (!a) return;
+          var href = a.getAttribute('href') || '';
+          if (!href || href.startsWith('#') || href.startsWith('/') || href.startsWith(window.location.origin)) return;
+          var host = (function(u) { try { return new URL(u, window.location.origin).hostname; } catch(e) { return 'unknown'; } })(href);
+          var key = host.replace(/^www\./, '');
+          store.clicks[key] = (store.clicks[key] || 0) + 1;
+          save();
+        });
+        window._pa = { stats: function() { try { return JSON.parse(localStorage.getItem('_pa')); } catch(e) { return null; } }, reset: function() { localStorage.removeItem('_pa'); } };
+      })();
+    </script>
   </head>
   <body>
     <div class="scroll-progress" aria-hidden="true"><span></span></div>

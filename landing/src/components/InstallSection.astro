@@ -4,9 +4,9 @@
       <span class="section-number">05</span>
       <div>
         <p class="section-kicker">Install</p>
-        <h2 class="section-title">One command. Zero configuration.</h2>
+        <h2 class="section-title">Inspect the source first. Then install.</h2>
         <p class="section-copy">
-          One command. No accounts, no cloud, no telemetry. The daemon runs invisibly in the background.
+          Read the code. Verify the checksum. Understand what you're running. No accounts, no cloud, no telemetry.
         </p>
       </div>
     </div>
@@ -24,9 +24,31 @@
           <span class="prompt-sign">PS&gt;</span>
           <span class="prompt-cmd">irm https://raw.githubusercontent.com/TheUser99-spec/Phylax/main/install.ps1 | iex</span>
         </div>
-        <div class="terminal-footnote">No admin required. The daemon runs gracefully in the background.</div>
+        <div class="terminal-footnote">No admin required. The daemon runs in the background.</div>
       </div>
       <span class="copy-toast" data-copy-toast aria-live="polite">Copied</span>
+    </div>
+
+    <div class="docs-note" style="margin-bottom:24px" data-reveal>
+      <strong>&#9888;&#65039; Before you run the installer</strong>
+      <p style="margin-top:4px">1. <a href="https://raw.githubusercontent.com/TheUser99-spec/Phylax/main/install.ps1" target="_blank" rel="noreferrer" style="color:var(--blue)">Inspect the installer script</a> on GitHub &mdash; it's a single PowerShell file.</p>
+      <p>2. <strong>Verify the checksum</strong> before execution:</p>
+      <div class="code-block" style="margin:8px 0">
+        <pre style="padding:12px 16px"><code style="font-size:12px;white-space:pre-wrap;word-break:break-all"># SHA256 of install.ps1
+Get-FileHash install.ps1 -Algorithm SHA256</code></pre>
+      </div>
+      <p style="font-size:13px;color:var(--faint);margin-top:4px">Checksums are published with each <a href="https://github.com/TheUser99-spec/Phylax/releases" target="_blank" rel="noreferrer" style="color:var(--blue)">GitHub release</a>.</p>
+    </div>
+
+    <div class="docs-note" data-reveal>
+      <strong>&#128736;&#65039; Manual install (build from source)</strong>
+      <p style="margin-top:4px">Prefer to compile yourself? No problem.</p>
+      <div class="code-block" style="margin:8px 0">
+        <pre style="padding:12px 16px"><code style="font-size:12px">git clone https://github.com/TheUser99-spec/Phylax.git
+cd Phylax
+cargo build --workspace --release</code></pre>
+      </div>
+      <p style="font-size:13px;color:var(--faint);margin-top:4px">Requires Rust toolchain. The compiled binary will be in <code>target/release/</code>.</p>
     </div>
 
     <div class="quick-cmds" data-reveal>

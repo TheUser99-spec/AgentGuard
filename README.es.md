@@ -15,14 +15,16 @@
 
 ## ⭐ Phylax — Protección a nivel de SO para agentes de IA
 
-**Impide que los agentes lean secretos, borren archivos o toquen cualquier cosa fuera de tu código fuente.**
+**Una capa de seguridad para Windows que aplica ACLs reales para que el kernel bloquee a los agentes de IA antes de que toquen archivos protegidos.**
 
-- Bloquea lecturas a `.env`, claves, secretos
-- Bloquea eliminaciones de `migrations/`, config, infraestructura
+- Bloquea lecturas a `.env`, claves, secretos mediante DENY ACEs
+- Bloquea eliminaciones de `migrations/`, config, infra mediante etiquetas MIC
 - Compatible con Claude Code, Cursor, Windsurf, Aider, OpenCode, Copilot
-- Forzado por ACLs reales de Windows (a nivel de kernel)
-- Daemon invisible + dashboard en terminal (60fps)
-- 100% local — sin cuentas, sin nube, sin telemetría
+- Fase 1: refuerzo mediante ACLs en modo usuario. Fase 2: driver kernel minifilter (en desarrollo)
+- Open source (Apache 2.0). 100% local. Buscando revisión técnica.
+
+> **Se agradece feedback técnico y revisión de seguridad.**<br>
+> ¿Encontraste una limitación? Abre un issue. ¿Quieres auditar el código? `cargo build --workspace`.
 
 <p align="center">
   <img src="assets/demo.gif" alt="Phylax Demo" width="720">
@@ -40,7 +42,7 @@ Por debajo, aplica ACLs reales de Windows para que el propio kernel del SO devue
 
 ## Por qué existe
 
-Los agentes de IA tienen acceso sin restricciones al sistema de archivos. Pueden leer tus secretos, borrar tus migraciones o destrozar tus archivos de configuración — sin preguntar, sin avisar.
+Los agentes de IA tienen acceso sin restricciones al sistema de archivos. Pueden leer secretos, borrar migraciones o destrozar archivos de configuración — sin preguntar.
 
 **Ejemplos reales:**
 
@@ -56,7 +58,9 @@ Phylax traza una frontera. El agente puede editar tu código fuente. Jamás podr
 
 ---
 
-## ⚡ Pruébalo en 10 segundos
+## Instalación
+
+> **Inspecciona el instalador primero:** [`install.ps1`](https://raw.githubusercontent.com/TheUser99-spec/Phylax/main/install.ps1)
 
 ```powershell
 irm https://raw.githubusercontent.com/TheUser99-spec/Phylax/main/install.ps1 | iex
@@ -64,7 +68,15 @@ phylax init
 phylax run
 ```
 
-Listo. Tu proyecto está protegido.
+<details>
+<summary>Instalación manual (compilar desde el código)</summary>
+
+```bash
+git clone https://github.com/TheUser99-spec/Phylax.git
+cd Phylax
+cargo build --workspace --release
+```
+</details>
 
 ---
 

@@ -15,14 +15,16 @@
 
 ## ⭐ Phylax — OS-level protection for AI coding agents
 
-**Stops agents from reading secrets, deleting files, or touching anything outside your source code.**
+**A Windows security layer that applies real ACLs so the kernel blocks AI agents from touching protected files.**
 
-- Blocks reads to `.env`, keys, secrets
-- Blocks deletes to `migrations/`, config, infra
+- Blocks reads to `.env`, keys, secrets via DENY ACEs
+- Blocks deletes to `migrations/`, config, infra via MIC labels
 - Works with Claude Code, Cursor, Windsurf, Aider, OpenCode, Copilot
-- Enforced by real Windows ACLs (kernel-level)
-- Invisible daemon + live terminal dashboard (60fps)
-- 100% local — no accounts, no cloud, no telemetry
+- Phase 1: user-mode ACL enforcement. Phase 2: kernel minifilter driver (in development)
+- Open source (Apache 2.0). 100% local. Seeking technical review.
+
+> **Technical feedback & security review appreciated.**<br>
+> Found a limitation? Open an issue. Want to audit the code? `cargo build --workspace`.
 
 <p align="center">
   <img src="assets/demo.gif" alt="Phylax Demo" width="720">
@@ -40,7 +42,7 @@ Under the hood, it applies real Windows ACLs so the OS kernel itself returns `AC
 
 ## Why it exists
 
-AI agents have unrestricted filesystem access. They can read your secrets, delete your migrations, or wipe your config files — without asking, without warning.
+AI agents have unrestricted filesystem access. They can read secrets, delete migrations, or wipe config files — without asking. 
 
 **Real examples from the wild:**
 
@@ -56,7 +58,9 @@ Phylax draws a boundary. The agent can edit your source code. It can never touch
 
 ---
 
-## ⚡ Try it in 10 seconds
+## Install
+
+> **Inspect the installer first:** [`install.ps1`](https://raw.githubusercontent.com/TheUser99-spec/Phylax/main/install.ps1)
 
 ```powershell
 irm https://raw.githubusercontent.com/TheUser99-spec/Phylax/main/install.ps1 | iex
@@ -64,7 +68,15 @@ phylax init
 phylax run
 ```
 
-Done. Your project is protected.
+<details>
+<summary>Manual install (build from source)</summary>
+
+```bash
+git clone https://github.com/TheUser99-spec/Phylax.git
+cd Phylax
+cargo build --workspace --release
+```
+</details>
 
 ---
 

@@ -5,11 +5,12 @@ import WhyPhylax from '../components/WhyPhylax.astro';
 import HowItWorks from '../components/HowItWorks.astro';
 import RealExample from '../components/RealExample.astro';
 import PolicyCards from '../components/PolicyCards.astro';
+import SecurityStatus from '../components/SecurityStatus.astro';
 import InstallSection from '../components/InstallSection.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 
 const title = 'Phylax - OS-level Protection for AI Coding Agents';
-const description = 'Phylax stops AI agents from reading secrets, deleting files, or touching anything outside your source code. 100% local, kernel-level Windows ACL enforcement.';
+const description = 'Phylax — Windows OS-level file protection against AI coding agents. DENY ACEs + MIC labels. Open source security tool. Technical feedback welcome.';
 const image = '/og-card.png';
 const homeStructuredData = JSON.stringify({
   '@context': 'https://schema.org',
@@ -126,6 +127,7 @@ const homeStructuredData = JSON.stringify({
     <HowItWorks />
     <RealExample />
     <PolicyCards />
+    <SecurityStatus />
     <InstallSection />
     <SiteFooter />
   </main>

@@ -1,0 +1,71 @@
+<section class="section" id="security-status" style="background:var(--paper-2);border-top:1px solid var(--line-strong);border-bottom:1px solid var(--line-strong)">
+  <div class="site-shell">
+    <div class="section-header">
+      <span class="section-number">04</span>
+      <div>
+        <p class="section-kicker">Security Status</p>
+        <h2 class="section-title">Phase 1 limitations &amp; transparency</h2>
+        <p class="section-copy">
+          Phylax is under active development. Phase 1 provides real protection, but understanding its boundaries is essential before relying on it.
+        </p>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line-strong);border:1px solid var(--line-strong);margin-top:28px">
+      <div style="padding:24px 28px;background:var(--paper);border-left:3px solid var(--green)">
+        <span style="display:block;margin-bottom:8px;font-family:var(--mono);font-size:11px;font-weight:800;text-transform:uppercase;color:var(--green-dark)">What Phase 1 protects</span>
+        <ul style="margin:0;padding:0 0 0 18px;font-size:14px;color:var(--muted);line-height:1.8">
+          <li>Blocks read, write, and delete operations on files matching <code>[deny]</code> patterns</li>
+          <li>Applies real Windows DENY ACEs enforced by the kernel at ring 3</li>
+          <li>Three-layer anti-bypass: DENY ACEs + WRITE_DAC + MIC labels (High Integrity)</li>
+          <li>Detects 9 AI agents via 5 priority-ordered signals</li>
+          <li>All audit events stored in local SQLite</li>
+          <li>Zero network requests &mdash; runs fully offline</li>
+        </ul>
+      </div>
+
+      <div style="padding:24px 28px;background:var(--paper);border-left:3px solid var(--amber)">
+        <span style="display:block;margin-bottom:8px;font-family:var(--mono);font-size:11px;font-weight:800;text-transform:uppercase;color:var(--amber)">Known limitations (Phase 1)</span>
+        <ul style="margin:0;padding:0 0 0 18px;font-size:14px;color:var(--muted);line-height:1.8">
+          <li>Protection is <strong>active while the daemon runs</strong>. <code>phylax stop</code> removes DENY ACEs</li>
+          <li>DENY ACEs apply to <strong>Everyone</strong> (including you). Stop the daemon to edit protected files</li>
+          <li>~750ms polling window between agent detection and ACE application</li>
+          <li>Audit logs in SQLite are <strong>user-writable</strong> &mdash; an agent with filesystem access could modify them</li>
+          <li>Killing the daemon process removes all protection</li>
+          <li>No per-agent differentiation yet (Phase 2)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="docs-note docs-note--warn" style="margin-top:20px">
+      <strong>Phase 2 (in development) will address these</strong>
+      <p>The kernel minifilter driver (driver/phylax.sys) will provide: agent-only blocking (you keep access), IRP-level interception with zero polling delay, protection that survives daemon restart, tamper-proof kernel audit, and per-agent overrides.</p>
+    </div>
+
+    <div style="margin-top:28px">
+      <div class="docs-table-wrap">
+      <table class="docs-table">
+        <thead><tr><th>Feature</th><th>Phase 1 (Current)</th><th>Phase 2 (In Dev)</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Enforcement</strong></td><td>Windows ACLs (user-mode)</td><td>Kernel I/O IRP interception (ring 0)</td></tr>
+          <tr><td><strong>Protection on daemon stop</strong></td><td>Removed</td><td>Persists (driver stays loaded)</td></tr>
+          <tr><td><strong>Agent vs human distinction</strong></td><td>No (blocks Everyone)</td><td>Yes (PID-based resolution)</td></tr>
+          <tr><td><strong>Detection latency</strong></td><td>~750ms polling</td><td>Zero (kernel callbacks + ETW)</td></tr>
+          <tr><td><strong>Audit integrity</strong></td><td>User-writable SQLite</td><td>Kernel-level, tamper-proof</td></tr>
+          <tr><td><strong>Bypass via killing daemon</strong></td><td>Possible</td><td>Blocked (driver persists)</td></tr>
+          <tr><td><strong>Ask flow enforcement</strong></td><td>Not enforceable</td><td>IRP paused, waits for user</td></tr>
+          <tr><td><strong>Per-agent overrides</strong></td><td>Stored, not evaluated</td><td>Active per-agent policy</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+
+    <div style="margin-top:24px;text-align:center">
+      <p style="font-size:14px;color:var(--muted);margin:0">
+        <strong>Transparency note:</strong> This page exists so you can make an informed decision.
+        No software is bug-free. If you find a vulnerability, please
+        <a href="https://github.com/TheUser99-spec/Phylax/blob/main/SECURITY.md" target="_blank" rel="noreferrer" style="color:var(--blue)">report it responsibly</a>.
+      </p>
+    </div>
+  </div>
+</section>
