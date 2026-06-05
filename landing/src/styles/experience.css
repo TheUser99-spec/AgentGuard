@@ -1431,3 +1431,318 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* ================================================================
+   MOBILE-FIRST OVERRIDES — base mobile (under 480px)
+   ================================================================ */
+@media (max-width: 480px) {
+  /* Nav — collapse to essential links */
+  .site-nav {
+    padding: 6px 10px;
+    height: auto;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .brand-mark {
+    font-size: 13px;
+    gap: 6px;
+  }
+  .brand-logo {
+    width: 22px;
+    height: 22px;
+  }
+  .nav-links {
+    gap: 8px;
+    font-size: 11px;
+    flex-wrap: wrap;
+  }
+  .nav-links a {
+    font-size: 11px;
+  }
+
+  /* Hero */
+  .hero-shell {
+    padding: 0 0 32px;
+  }
+  .hero-copy h1 {
+    font-size: clamp(28px, 8vw, 40px);
+    line-height: 1.08;
+  }
+  .hero-body {
+    font-size: 14px;
+    max-width: 100%;
+  }
+  .hero-superpowers {
+    font-size: 11px;
+  }
+  .hero-copy .btn-row {
+    flex-direction: column;
+    gap: 8px;
+  }
+  .hero-copy .btn-row .button {
+    width: 100%;
+    justify-content: center;
+  }
+  .hero-terminal {
+    box-shadow: 8px 8px 0 rgba(17, 19, 22, 0.06);
+    margin-top: 24px;
+  }
+  .ht-body {
+    min-height: 120px;
+    padding: 10px 12px;
+  }
+  .ht-line {
+    font-size: 10px;
+    gap: 4px;
+  }
+  .ht-tag {
+    font-size: 9px;
+    width: 40px;
+  }
+  .scroll-cue {
+    font-size: 11px;
+    margin-top: 16px;
+  }
+
+  /* Sections */
+  .section {
+    padding: 40px 0;
+  }
+  .section-header {
+    flex-direction: column;
+    gap: 8px;
+  }
+  .section-title {
+    font-size: clamp(24px, 7vw, 32px) !important;
+  }
+  .section-copy {
+    font-size: 14px;
+  }
+  .section-number {
+    font-size: 28px;
+  }
+
+  /* Why Phylax */
+  .drama-problem,
+  .drama-solution {
+    padding: 20px 20px;
+  }
+  .drama-problem p,
+  .drama-solution p {
+    font-size: 13px;
+  }
+  .why-card {
+    padding: 24px 20px;
+  }
+  .why-card h3 {
+    font-size: 16px;
+  }
+  .why-card p {
+    font-size: 13px;
+  }
+  .coverage-note {
+    padding: 16px 18px;
+  }
+
+  /* How it works */
+  .flow-step-simple {
+    padding: 24px 20px;
+  }
+  .flow-num {
+    width: 40px;
+    height: 40px;
+    font-size: 14px;
+  }
+  .flow-step-simple h3 {
+    font-size: 14px;
+  }
+
+  /* Policy cards */
+  .policy-card {
+    padding: 24px 20px;
+  }
+  .policy-card h3 {
+    font-size: 16px;
+  }
+  .priority-chain {
+    gap: 3px;
+  }
+  .priority-bucket {
+    padding: 3px 6px;
+    min-width: 56px;
+  }
+  .priority-bucket strong {
+    font-size: 10px;
+  }
+  .priority-label {
+    font-size: 9px;
+    margin-right: 4px;
+  }
+
+  /* Security status */
+  .security-grid > div {
+    padding: 18px 20px;
+  }
+  .security-grid ul {
+    font-size: 13px;
+  }
+
+  /* Install */
+  .install-panel {
+    gap: 24px;
+  }
+  .terminal-body {
+    padding: 12px 14px;
+  }
+  .terminal-prompt .prompt-cmd {
+    font-size: 12px;
+    word-break: break-all;
+  }
+  .terminal-footnote {
+    font-size: 10px;
+    padding: 0 14px 12px;
+  }
+  .quick-cmd {
+    padding: 10px 12px;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .quick-cmd code {
+    font-size: 11px;
+  }
+  .quick-cmd span {
+    font-size: 12px;
+  }
+  .install-badges {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .install-badges span {
+    font-size: 10px;
+    padding: 10px;
+  }
+
+  /* Footer */
+  .closer {
+    padding: 32px 0;
+  }
+  .closer-links {
+    gap: 16px;
+  }
+  .closer-links a {
+    font-size: 12px;
+  }
+
+  /* Docs/FAQ/Tutorial pages */
+  .docs-header {
+    margin-bottom: 24px;
+  }
+  .docs-header .section-title {
+    font-size: clamp(24px, 8vw, 32px) !important;
+  }
+  .docs-toc {
+    flex-direction: column;
+    gap: 2px;
+    padding: 8px 0;
+    margin-bottom: 28px;
+  }
+  .docs-toc a {
+    font-size: 12px;
+    padding: 3px 6px;
+  }
+  .docs-h2 {
+    font-size: 20px;
+    padding-top: 32px;
+  }
+  .docs-h3 {
+    font-size: 16px;
+    margin: 20px 0 8px;
+  }
+  .docs-p {
+    font-size: 14px;
+    margin: 0 0 14px;
+  }
+  .code-block pre {
+    padding: 12px 14px;
+  }
+  .code-block pre code {
+    font-size: 11px;
+    line-height: 1.5;
+  }
+  .docs-note {
+    padding: 14px 16px;
+    margin-bottom: 16px;
+  }
+  .docs-note p {
+    font-size: 13px;
+  }
+  .docs-table th,
+  .docs-table td {
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+  .docs-table td:first-child {
+    font-size: 11px;
+  }
+
+  /* FAQ items */
+  .faq-item {
+    padding: 18px 0;
+  }
+  .faq-item h3 {
+    font-size: 16px;
+  }
+  .faq-item p {
+    font-size: 13px;
+  }
+
+  /* Tutorial next-steps grid */
+  .docs-content > div[style*="grid-template-columns"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Dev path */
+  .incident-card {
+    padding: 14px 16px;
+  }
+  .incident-title {
+    font-size: 12px;
+  }
+  .phase-badge {
+    padding: 3px 10px;
+    font-size: 9px;
+  }
+  .platform-card {
+    padding: 18px 16px;
+  }
+  .platform-card strong {
+    font-size: 16px;
+  }
+
+  /* Buttons */
+  .button {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+}
+
+/* Tablet breakpoint — smooth the in-between */
+@media (min-width: 481px) and (max-width: 980px) {
+  .hero-layout {
+    grid-template-columns: 1fr;
+  }
+  .hero-stage {
+    margin-top: 32px;
+  }
+  .hero-terminal {
+    max-width: 540px;
+  }
+
+  .install-panel {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .section {
+    padding: 64px 0;
+  }
+}
