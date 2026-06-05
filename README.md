@@ -5,6 +5,8 @@
 ![License](https://img.shields.io/badge/license-Apache%202.0-blue?style=for-the-badge)
 ![Platform](https://img.shields.io/badge/platform-Windows-0078D6?style=for-the-badge&logo=windows)
 
+[English](README.md) &nbsp;|&nbsp; [Español](README.es.md)
+
 </div>
 
 <br>
