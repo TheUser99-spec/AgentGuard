@@ -4,6 +4,8 @@
 ![Version](https://img.shields.io/github/v/release/TheUser99-spec/Phylax?style=for-the-badge&color=6cdda3)
 ![License](https://img.shields.io/badge/license-Apache%202.0-blue?style=for-the-badge)
 ![Platform](https://img.shields.io/badge/platform-Windows-0078D6?style=for-the-badge&logo=windows)
+<br>
+[![X](https://img.shields.io/badge/X-@Phylaxdev-000000?style=for-the-badge&logo=x)](https://x.com/Phylaxdev)
 
 [English](README.md) &nbsp;|&nbsp; [Español](README.es.md)
 
@@ -227,6 +229,8 @@ Se distribuye **sin garantía**. Ver [DISCLAIMER.md](DISCLAIMER.md).
 **Si Phylax salvó tu `.env` hoy, ya sabes qué hacer →**
 
 [![Stars](https://img.shields.io/github/stars/TheUser99-spec/Phylax?style=social)](https://github.com/TheUser99-spec/Phylax)
+&nbsp;
+[![X](https://img.shields.io/badge/X-@Phylaxdev-000000?style=social&logo=x)](https://x.com/Phylaxdev)
 
 <sub>Construido con Rust — Windows-first, a prueba de agentes.</sub>
 
