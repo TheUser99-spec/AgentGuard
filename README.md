@@ -13,7 +13,7 @@
 
 <br>
 
-## ⭐ Phylax — OS-level protection for AI coding agents
+## ⭐ Phylax | OS-level protection for AI coding agents
 
 **A Windows security layer that applies real ACLs so the kernel blocks AI agents from touching protected files.**
 
